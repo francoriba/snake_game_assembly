@@ -1,0 +1,1755 @@
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;-------------------------------------------------------------------------------
+                      00002 ; FILE: LEDsnake
+                      00003 ; AUTH: Ed's Projects
+                      00004 ; DATE: 01/09/2016
+                      00005 ; DESC: 5x7 LED Dot Matrix Snake Game
+                      00006 ;-------------------------------------------------------------------------------
+                      00007         LIST            P = 16F887, R=DEC       
+                      00008         include         <P16F887.inc>           ; Define configurations, registers, etc.
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Jan 06 2020
+                      00005 ;  MPASM PIC16F887 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2020 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00810         LIST
+2007   23C1           00009  __CONFIG _CONFIG1, _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IE
+                            SO_OFF & _FCMEN_OFF & _LVP_OFF
+                      00010 ;-------------------------------------------------------------------------------
+                      00011 ;-----------------------------  Port Definitions  ------------------------------
+                      00012 ;-------------------------------------------------------------------------------            
+                      00013 ; PortD - Output - RD0 - Pin 19 - Row 1
+                      00014 ; PortD - Output - RD1 - Pin 20 - Row 2
+                      00015 ; PortD - Output - RD2 - Pin 21 - Row 3
+                      00016 ; PortD - Output - RD3 - Pin 22 - Row 4
+                      00017 ; PortD - Output - RD4 - Pin 27 - Row 5 
+                      00018 ; PortD - Output - RD5 - Pin 28 - Row 6
+                      00019 ; PortD - Output - RD6 - Pin 29 - Row 7 
+                      00020 ; PortD - Output - RD7 - Pin 30 - Row 7
+                      00021 
+                      00022 ; PortC - Output - RC0 - Pin 15 - Column 1
+                      00023 ; PortC - Output - RC1 - Pin 16 - Column 2
+                      00024 ; PortC - Output - RC2 - Pin 17 - Column 3
+                      00025 ; PortC - Output - RC3 - Pin 18 - Column 4
+                      00026 ; PortC - Output - RC4 - Pin 23 - Column 5
+                      00027 ; PortC - Output - RC5 - Pin 24 - Column 6
+                      00028 ; PortC - Output - RC6 - Pin 25 - Column 7
+                      00029 ; PortC - Output - RC7 - Pin 26 - Column 7
+                      00030         
+                      00031 ; PortB - Input - RB7 - Pin 40 - Button Up
+                      00032 ; PortB - Input - RB6 - Pin 39 - Button Down
+                      00033 ; PortB - Input - RB5 - Pin 38 - Button Left
+                      00034 ; PortB - Input - RB4 - Pin 37 - Button Right   
+                      00035         
+                      00036 ; PortA - Output - RA4 - Pin 3 - Provides pull-up voltage for button resistors          
+                      00037 ;-------------------------------------------------------------------------------
+                      00038 ;--------------------------------  Variables  ---------------------------------- 
+                      00039 ;-------------------------------------------------------------------------------
+                      00040             cblock      0x20        
+  00000020            00041             temp
+  00000021            00042             temp2
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+  00000022            00043             temp3
+  00000023            00044             temp4
+  00000024            00045             temp5
+  00000025            00046             C1                  ;   Column 1 Matrix Display
+  00000026            00047             C2
+  00000027            00048             C3
+  00000028            00049             C4
+  00000029            00050             C5                  ;   Column 5 Matrix Display
+  0000002A            00051             C6
+  0000002B            00052             C7
+  0000002C            00053             C8
+  0000002D            00054             S1                  ;   Snake Position Column 1
+  0000002E            00055             S2                  ;   Snake Position Column 2
+  0000002F            00056             S3                  ;   Snake Position Column 3
+  00000030            00057             S4                  ;   Snake Position Column 4
+  00000031            00058             S5                  ;   Snake Position Column 5
+  00000032            00059             S6                  ;   Snake Position Column 6
+  00000033            00060             S7                  ;   Snake Position Column 7
+  00000034            00061             S8                  ;   Snake Position Column 8
+  00000035            00062             Posind              ;   Column Indicator, bit4 - 0
+  00000036            00063             Posdir              ;   Snake Direction 0-up, 1-down, 2-left, 3-right
+  00000037            00064             w_save
+  00000038            00065             status_save
+  00000039            00066             pclath_save
+  0000003A            00067             snake               ;   Snake length
+  0000003B            00068             colind              ;   Collision Indicator
+  0000003C            00069             apptmr              ;   Apple timer
+  0000003D            00070             T1H                 ;   Timer1 High
+                      00071             endc
+                      00072 ;-------------------------------------------------------------------------------
+                      00073 ;-----------------------------  Define Symbols  --------------------------------
+                      00074 ;-------------------------------------------------------------------------------
+                      00075             #define ROW1    PORTD, RD0          
+                      00076             #define ROW2    PORTD, RD1
+                      00077             #define ROW3    PORTD, RD2
+                      00078             #define ROW4    PORTD, RD3
+                      00079             #define ROW5    PORTD, RD4
+                      00080             #define ROW6    PORTD, RD5
+                      00081             #define ROW7    PORTD, RD6
+                      00082             #define ROW8    PORTD, RD7
+                      00083             #define COL1    PORTC, RC0
+                      00084             #define COL2    PORTC, RC1
+                      00085             #define COL3    PORTC, RC2
+                      00086             #define COL4    PORTC, RC3
+                      00087             #define COL5    PORTC, RC4
+                      00088             #define COL6    PORTC, RC5
+                      00089             #define COL7    PORTC, RC6
+                      00090             #define COL8    PORTC, RC7
+                      00091             #define UP      PORTB, RB7  
+                      00092             #define DOWN    PORTB, RB6
+                      00093             #define LEFT    PORTB, RB5
+                      00094             #define RIGHT   PORTB, RB4
+                      00095 ;-------------------------------------------------------------------------------
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00096 ;-------------------------------  Program Code  --------------------------------
+                      00097 ;-------------------------------------------------------------------------------
+0000                  00098             org         0 
+0000   2805           00099             goto        Init
+                      00100 ;-------------------------------------------------------------------------------
+                      00101 ;-----------------------------  Interrupt Vector  ------------------------------
+                      00102 ;-------------------------------------------------------------------------------
+0004                  00103             org         04
+0004   28ED           00104             goto        Interrupt
+                      00105 ;-------------------------------------------------------------------------------
+                      00106 ;--------------------------  Initialisation of Ports  --------------------------
+                      00107 ;-------------------------------------------------------------------------------
+0005                  00108 Init        ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
+0005   1683 1303      00109             banksel     TRISB
+0007   30F0           00110             movlw       0xF0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0086           00111             movwf       TRISB
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0009   0187           00112             clrf        TRISC           
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000A   0188           00113             clrf        TRISD
+                      00114             ;all analogue pins to digital
+000B   1683 1703      00115             banksel     ANSEL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000D   0188           00116             clrf        ANSEL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000E   0189           00117             clrf        ANSELH
+                      00118             ;set PORTB and PORTD pins LOW and PORTC pins HIGH
+000F   1283 1303      00119             banksel     PORTB
+0011   0186           00120             clrf        PORTB
+0012   0187           00121             clrf        PORTC
+0013   30FF           00122             movlw       0xFF
+0014   0088           00123             movwf       PORTD
+                      00124             ;clear variable's registers         
+0015   01B6           00125             clrf        Posdir
+0016   01AD           00126             clrf        S1
+0017   01AE           00127             clrf        S2
+0018   01AF           00128             clrf        S3
+0019   01B0           00129             clrf        S4
+001A   01B1           00130             clrf        S5
+001B   01BB           00131             clrf        colind
+001C   01BC           00132             clrf        apptmr
+001D   3003           00133             movlw       d'3'
+001E   00BA           00134             movwf       snake           ; Start with 3 snake segments
+001F   30A0           00135             movlw       d'160'
+0020   0084           00136             movwf       FSR
+0021   0180           00137 clrram      clrf        INDF
+0022   0A84           00138             incf        FSR, f
+0023   0804           00139             movf        FSR, w
+0024   3AE6           00140             xorlw       d'230'
+0025   1D03           00141             btfss       STATUS, Z
+0026   2821           00142             goto        clrram
+                      00143             
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00144 ;-------------------------------------------------------------------------------
+                      00145 ;-----------------------  Interrupt Timer Initialisation  ----------------------
+                      00146 ;-------------------------------------------------------------------------------
+0027   1283 1303      00147             banksel     T1CON
+0029   3034           00148             movlw       b'00110100'     ;Initilialy disabled, working with internal clock, not synchroni
+                            zed ,LP osc is off,  prescaler 1:8, gate disabled
+002A   0090           00149             movwf       T1CON
+002B   300B           00150             movlw       b'00001011'     ;0x0B
+002C   008F           00151             movwf       TMR1H           ;0xDB
+002D   30DB           00152             movlw       b'11011011'
+002E   008E           00153             movwf       TMR1L           ; will interrupt every 0.25 seconds 
+002F   1683 1303      00154             banksel     PIE1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0031   140C           00155             bsf         PIE1, TMR1IE    ; Enable Timer 1 Interrupt
+0032   1283 1303      00156             banksel     PIR1
+0034   100C           00157             bcf         PIR1, TMR1IF
+0035   178B           00158             bsf         INTCON, GIE     ;Enable Global Interrupts
+0036   170B           00159             bsf         INTCON, PEIE    ;Enable Peripheral Interrupts for TMR1
+                      00160 
+                      00161            
+                      00162 
+                      00163 ;-------------------------------------------------------------------------------
+                      00164 ;--------------------------------  Game Initialisaton  -------------------------
+                      00165 ;-------------------------------------------------------------------------------
+                      00166             ;enable pull ups for RB7-RB4
+0037   1683 1303      00167             banksel     OPTION_REG
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   1381           00168             bcf         OPTION_REG, NOT_RBPU
+003A   1683 1303      00169             banksel     WPUB
+003C   30F0           00170             movlw       0xF0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+003D   0095           00171             movwf       WPUB
+003E   1283 1303      00172             banksel     PORTA
+0040   3002           00173             movlw       d'2'
+0041   205C           00174             call        delay1          ; Wait 0.5 second
+                      00175             ;here we can set where we want the snake to spawn, we decide to spawn in column 4, row 4
+0042   3000           00176             movlw       b'00000000'
+0043   00A5           00177             movwf       C1
+0044   3000           00178             movlw       b'00000000'
+0045   00A6           00179             movwf       C2
+0046   3000           00180             movlw       b'00000000'
+0047   00A7           00181             movwf       C3
+0048   3008           00182             movlw       b'00001000'
+0049   00A8           00183             movwf       C4
+004A   00B0           00184             movwf       S4
+004B   3000           00185             movlw       b'00000000'
+004C   00A9           00186             movwf       C5
+004D   3000           00187             movlw       b'00000000'
+004E   00AA           00188             movwf       C6
+004F   3000           00189             movlw       b'00000000'
+0050   00AB           00190             movwf       C7
+0051   3000           00191             movlw       b'00000000'
+0052   00AC           00192             movwf       C8
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00193             
+                      00194             ;now we indicate the starting column is column 4
+0053   3008           00195             movlw       b'00001000' 
+0054   00B5           00196             movwf       Posind
+0055   20D0           00197 here        call        Button          ;go check if a button was pushed, and if it was a valid directio
+                            n change Podir, if it wasn't keep it the same 
+0056   0836           00198             movf        Posdir, W
+0057   3E00           00199             addlw       d'0'
+0058   1903           00200             btfsc       STATUS, Z       ; Start snake moving when button pressed
+0059   2855           00201             goto        here
+005A   1410           00202             bsf         T1CON, TMR1ON   ; Start timer counting
+005B   2875           00203             goto        Start
+                      00204 ;-------------------------------------------------------------------------------
+                      00205 ;--------------------------------  Delay Loops  --------------------------------
+                      00206 ;-------------------------------------------------------------------------------
+005C   00A3           00207 delay1      movwf       temp4
+005D   3064           00208 loopy2      movlw       d'100'      ;multiples of 2.5ms
+005E   00A2           00209             movwf       temp3
+005F   30FA           00210 loopy       movlw       d'250'
+0060   00A0           00211             movwf       temp
+0061   2862           00212 initloop    goto        $+1         ;2us
+0062   2863           00213             goto        $+1         ;2us
+0063   2864           00214             goto        $+1         ;2us
+0064   0000           00215             nop                     ;1us
+0065   0BA0           00216             decfsz      temp, f     ;1us
+0066   2861           00217             goto        initloop    ;2us  
+0067   0BA2           00218             decfsz      temp3, f
+0068   285F           00219             goto        loopy       ;250ms total
+0069   0BA3           00220             decfsz      temp4, f
+006A   285D           00221             goto        loopy2      ;Multiples of 250ms
+006B   0008           00222             return
+                      00223             
+006C   3064           00224 msdelay     movlw       d'100'
+006D   00A0           00225             movwf       temp
+006E   286F           00226 loop        goto        $+1         ;2us
+006F   2870           00227             goto        $+1         ;2us
+0070   2871           00228             goto        $+1         ;2us
+0071   0000           00229             nop                     ;1us
+0072   0BA0           00230             decfsz      temp, f     ;1us
+0073   286E           00231             goto        loop        ;2us  
+0074   0008           00232             return          
+                      00233 ;-------------------------------------------------------------------------------
+                      00234 ;--------------------------------  Main Program  -------------------------------
+                      00235 ;-------------------------------------------------------------------------------        
+0075   2085           00236 Start       call        Disp
+0076   1C3B           00237             btfss       colind, 0
+0077   2875           00238             goto        Start
+                      00239 ;   Game over!
+0078   1010           00240             bcf         T1CON, TMR1ON   ; Stop timer counting
+0079   3008           00241             movlw       d'8'
+007A   00A4           00242             movwf       temp5
+007B   3064           00243 gameover    movlw       d'100'          
+007C   00A3           00244             movwf       temp4
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+007D   2085           00245             call        Disp
+007E   0BA3           00246             decfsz      temp4, f
+007F   287D           00247             goto        $-2
+0080   3001           00248             movlw       d'1'
+0081   205C           00249             call        delay1          ; Wait 250ms delay
+0082   0BA4           00250             decfsz      temp5, f
+0083   287B           00251             goto        gameover
+0084   2805           00252             goto        Init            ; Start Again
+                      00253 ;-------------------------------------------------------------------------------
+                      00254 ;--------------------------------  Display Cycle  ------------------------------
+                      00255 ;-------------------------------------------------------------------------------                    
+0085   0825           00256 Disp        movf        C1, w
+0086   20B6           00257             call        PRTLD
+0087   1407           00258             bsf         COL1
+0088   206C           00259             call        msdelay
+0089   1007           00260             bcf         COL1
+008A   20D0           00261             call        Button
+                      00262             
+008B   0826           00263             movf        C2, w
+008C   20B6           00264             call        PRTLD
+008D   1487           00265             bsf         COL2
+008E   206C           00266             call        msdelay
+008F   1087           00267             bcf         COL2
+0090   20D0           00268             call        Button
+                      00269             
+0091   0827           00270             movf        C3, w
+0092   20B6           00271             call        PRTLD
+0093   1507           00272             bsf         COL3
+0094   206C           00273             call        msdelay
+0095   1107           00274             bcf         COL3
+0096   20D0           00275             call        Button
+                      00276             
+0097   0828           00277             movf        C4, w
+0098   20B6           00278             call        PRTLD
+0099   1587           00279             bsf         COL4
+009A   206C           00280             call        msdelay
+009B   1187           00281             bcf         COL4
+009C   20D0           00282             call        Button
+                      00283             
+009D   0829           00284             movf        C5, w
+009E   20B6           00285             call        PRTLD
+009F   1607           00286             bsf         COL5
+00A0   206C           00287             call        msdelay
+00A1   1207           00288             bcf         COL5
+00A2   20D0           00289             call        Button
+                      00290             
+00A3   082A           00291             movf        C6, w
+00A4   20B6           00292             call        PRTLD
+00A5   1687           00293             bsf         COL6
+00A6   206C           00294             call        msdelay
+00A7   1287           00295             bcf         COL6
+00A8   20D0           00296             call        Button
+                      00297             
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00A9   082B           00298             movf        C7, w
+00AA   20B6           00299             call        PRTLD
+00AB   1707           00300             bsf         COL7
+00AC   206C           00301             call        msdelay
+00AD   1307           00302             bcf         COL7
+00AE   20D0           00303             call        Button
+                      00304             
+00AF   082C           00305             movf        C8, w
+00B0   20B6           00306             call        PRTLD
+00B1   1787           00307             bsf         COL8
+00B2   206C           00308             call        msdelay
+00B3   1387           00309             bcf         COL8
+00B4   20D0           00310             call        Button
+00B5   0008           00311             return
+                      00312             
+00B6   00A0           00313 PRTLD       movwf       temp
+00B7   1408           00314             bsf         ROW1
+00B8   1488           00315             bsf         ROW2
+00B9   1508           00316             bsf         ROW3
+00BA   1588           00317             bsf         ROW4
+00BB   1608           00318             bsf         ROW5
+00BC   1688           00319             bsf         ROW6
+00BD   1708           00320             bsf         ROW7
+00BE   1788           00321             bsf         ROW8
+00BF   1820           00322             btfsc       temp, 0
+00C0   1008           00323             bcf         ROW1
+00C1   18A0           00324             btfsc       temp, 1
+00C2   1088           00325             bcf         ROW2
+00C3   1920           00326             btfsc       temp, 2
+00C4   1108           00327             bcf         ROW3
+00C5   19A0           00328             btfsc       temp, 3
+00C6   1188           00329             bcf         ROW4
+00C7   1A20           00330             btfsc       temp, 4
+00C8   1208           00331             bcf         ROW5
+00C9   1AA0           00332             btfsc       temp, 5
+00CA   1288           00333             bcf         ROW6
+00CB   1B20           00334             btfsc       temp, 6
+00CC   1308           00335             bcf         ROW7
+00CD   1BA0           00336             btfsc       temp, 7
+00CE   1388           00337             bcf         ROW8
+00CF   0008           00338             return
+                      00339 ;-------------------------------------------------------------------------------
+                      00340 ;--------------------------------  Button Input  -------------------------------
+                      00341 ;-------------------------------------------------------------------------------        
+00D0   1F86           00342 Button      btfss       UP
+00D1   28D9           00343             goto        GO_UP
+00D2   1F06           00344             btfss       DOWN
+00D3   28DE           00345             goto        GO_DOWN
+00D4   1E86           00346             btfss       LEFT
+00D5   28E3           00347             goto        GO_LEFT
+00D6   1E06           00348             btfss       RIGHT
+00D7   28E8           00349             goto        GO_RIGHT
+00D8   0008           00350             return          
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00D9   18B6           00351 GO_UP       btfsc       Posdir, 1       ; Make sure we can't go back on ourself
+00DA   28DE           00352             goto        GO_DOWN 
+00DB   3001           00353             movlw       b'00000001'
+00DC   00B6           00354             movwf       Posdir
+00DD   0008           00355             return
+00DE   1836           00356 GO_DOWN     btfsc       Posdir, 0
+00DF   28D9           00357             goto        GO_UP
+00E0   3002           00358             movlw       b'00000010'
+00E1   00B6           00359             movwf       Posdir
+00E2   0008           00360             return
+00E3   19B6           00361 GO_LEFT     btfsc       Posdir, 3
+00E4   28E8           00362             goto        GO_RIGHT
+00E5   3004           00363             movlw       b'00000100'
+00E6   00B6           00364             movwf       Posdir
+00E7   0008           00365             return
+00E8   1936           00366 GO_RIGHT    btfsc       Posdir, 2
+00E9   28E3           00367             goto        GO_LEFT
+00EA   3008           00368             movlw       b'00001000'
+00EB   00B6           00369             movwf       Posdir
+00EC   0008           00370             return          
+                      00371 ;-------------------------------------------------------------------------------
+                      00372 ;-----------------------------  Interrupt Program  -----------------------------
+                      00373 ;-------------------------------------------------------------------------------            
+00ED   100C           00374 Interrupt   bcf         PIR1, TMR1IF    ;clear flag 
+00EE   00B7           00375             movwf       w_save          ;start of context saving
+00EF   0803           00376             movf        STATUS, w
+00F0   0183           00377             clrf        STATUS
+00F1   00B8           00378             movwf       status_save
+00F2   080A           00379             movf        PCLATH, w
+00F3   00B9           00380             movwf       pclath_save     ;end of context saving
+                      00381             
+00F4   1010           00382             bcf         T1CON, TMR1ON   ; Stop timer counting
+00F5   083D           00383             movf        T1H, w
+00F6   008F           00384             movwf       TMR1H
+00F7   30DB           00385             movlw       b'11011011'
+00F8   008E           00386             movwf       TMR1L           ; Half a second
+00F9   1410           00387             bsf         T1CON, TMR1ON   ; Start timer counting
+                      00388             
+00FA   1BBC           00389             btfsc       apptmr, 7       ; Bit 7 indicates if there is an aplle still not eaten in de boa
+                            rd
+00FB   2901           00390             goto        skip            ;skip count, if there is an apple in the board, don't increment 
+                            the "apple placement" counter
+00FC   0ABC           00391             incf        apptmr, f       ;if there is no apple in the board, increase the count of timer 
+                            interruptions, and when it goes to 10 go place a new apple in the board
+00FD   083C           00392             movf        apptmr, w
+00FE   3A0A           00393             xorlw       d'10'
+00FF   1903           00394             btfsc       STATUS, Z
+0100   2271           00395             call        Apple
+0101                  00396 skip        ;depending in wich column was the snake´s head when the interruption ocurred, 
+0101   1BB5           00397             btfsc       Posind, 7   ; Are we column 8?
+0102   292B           00398             goto        Col8
+0103   1B35           00399             btfsc       Posind, 6   ; Are we column 7?
+0104   2927           00400             goto        Col7
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0105   1AB5           00401             btfsc       Posind, 5   ; Are we column 6?
+0106   2923           00402             goto        Col6
+0107   1A35           00403             btfsc       Posind, 4   ; Are we column 5?
+0108   291F           00404             goto        Col5
+0109   19B5           00405             btfsc       Posind, 3   ; Are we column 4?
+010A   291B           00406             goto        Col4
+010B   1935           00407             btfsc       Posind, 2   ; Are we column 3?
+010C   2917           00408             goto        Col3
+010D   18B5           00409             btfsc       Posind, 1   ; Are we column 2?
+010E   2913           00410             goto        Col2
+                      00411                                     ; Then we can only be at column 1       
+010F   082D           00412 Col1        movf        S1, w
+0110   216D           00413             call        Checkdir
+0111   212F           00414             call        Placecont
+0112   2992           00415             goto        LoadDisp
+0113   082E           00416 Col2        movf        S2, w
+0114   216D           00417             call        Checkdir
+0115   212F           00418             call        Placecont
+0116   2992           00419             goto        LoadDisp
+0117   082F           00420 Col3        movf        S3, w
+0118   216D           00421             call        Checkdir
+0119   212F           00422             call        Placecont
+011A   2992           00423             goto        LoadDisp
+011B   0830           00424 Col4        movf        S4, w
+011C   216D           00425             call        Checkdir
+011D   212F           00426             call        Placecont
+011E   2992           00427             goto        LoadDisp            
+011F   0831           00428 Col5        movf        S5, w
+0120   216D           00429             call        Checkdir
+0121   212F           00430             call        Placecont
+0122   2992           00431             goto        LoadDisp
+0123   0832           00432 Col6        movf        S6, w
+0124   216D           00433             call        Checkdir
+0125   212F           00434             call        Placecont
+0126   2992           00435             goto        LoadDisp
+0127   0833           00436 Col7        movf        S7, w
+0128   216D           00437             call        Checkdir
+0129   212F           00438             call        Placecont
+012A   2992           00439             goto        LoadDisp
+012B   0834           00440 Col8        movf        S8, w
+012C   216D           00441             call        Checkdir
+012D   212F           00442             call        Placecont
+012E   2992           00443             goto        LoadDisp
+                      00444                                             
+012F   01B4           00445 Placecont   clrf        S8
+0130   01B3           00446             clrf        S7
+0131   01B2           00447             clrf        S6
+0132   01B1           00448             clrf        S5
+0133   01B0           00449             clrf        S4
+0134   01AF           00450             clrf        S3
+0135   01AE           00451             clrf        S2
+0136   01AD           00452             clrf        S1
+                      00453             
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0137   1BB5           00454             btfsc       Posind, 7   ; Are we to place contents in column 8?
+0138   294A           00455             goto        PlacA
+0139   1B35           00456             btfsc       Posind, 6   ; Are we to place contents in column 7?
+013A   294F           00457             goto        PlacB
+013B   1AB5           00458             btfsc       Posind, 5   ; Are we to place contents in column 6?
+013C   2954           00459             goto        PlacC
+013D   1A35           00460             btfsc       Posind, 4   ; Are we to place contents in column 5?
+013E   2959           00461             goto        PlacD
+013F   19B5           00462             btfsc       Posind, 3   ; Are we to place contents in column 4?
+0140   295E           00463             goto        PlacE
+0141   1935           00464             btfsc       Posind, 2   ; Are we to place contents in column 3?
+0142   2963           00465             goto        PlacF
+0143   18B5           00466             btfsc       Posind, 1   ; Are we to place contents in column 2?
+0144   2968           00467             goto        PlacG            
+                      00468             
+0145   00AD           00469             movwf       S1          ; Then we must place them in column 1
+0146   00A2           00470             movwf       temp3
+0147   0103           00471             clrw
+0148   2257           00472             call        plcdot      ; Place dot in counter
+0149   0008           00473             return
+                      00474             
+014A   00B4           00475 PlacA       movwf       S8
+014B   00A2           00476             movwf       temp3       ; Save column offset            
+014C   3007           00477             movlw       d'7'        ; Tells next program what column we're in
+014D   2257           00478             call        plcdot      ; Place dot in counter
+014E   0008           00479             return      
+014F   00B3           00480 PlacB       movwf       S7
+0150   00A2           00481             movwf       temp3       ; Save column offset            
+0151   3006           00482             movlw       d'6'        ; Tells next program what column we're in
+0152   2257           00483             call        plcdot      ; Place dot in counter
+0153   0008           00484             return      
+0154   00B2           00485 PlacC       movwf       S6
+0155   00A2           00486             movwf       temp3       ; Save column offset            
+0156   3005           00487             movlw       d'5'        ; Tells next program what column we're in
+0157   2257           00488             call        plcdot      ; Place dot in counter
+0158   0008           00489             return      
+0159   00B1           00490 PlacD       movwf       S5
+015A   00A2           00491             movwf       temp3       ; Save column offset            
+015B   3004           00492             movlw       d'4'        ; Tells next program what column we're in
+015C   2257           00493             call        plcdot      ; Place dot in counter
+015D   0008           00494             return          
+015E   00B0           00495 PlacE       movwf       S4
+015F   00A2           00496             movwf       temp3       ; Save column offset 
+0160   3003           00497             movlw       d'3'        ; Tells next program what column we're in
+0161   2257           00498             call        plcdot      ; Place dot in counter
+0162   0008           00499             return                                              
+0163   00AF           00500 PlacF       movwf       S3
+0164   00A2           00501             movwf       temp3       ; Save column offset            
+0165   3002           00502             movlw       d'2'        ; Tells next program what column we're in
+0166   2257           00503             call        plcdot      ; Place dot in counter
+0167   0008           00504             return
+0168   00AE           00505 PlacG       movwf       S2
+0169   00A2           00506             movwf       temp3       ; Save column offset    
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+016A   3001           00507             movlw       d'1'        ; Tells next program what column we're in
+016B   2257           00508             call        plcdot      ; Place dot in counter
+016C   0008           00509             return          
+                      00510             
+016D   1836           00511 Checkdir    btfsc       Posdir, 0   ; Going up?
+016E   2974           00512             goto        DirectU
+016F   18B6           00513             btfsc       Posdir, 1   ; Going down?
+0170   297A           00514             goto        DirectD
+0171   1936           00515             btfsc       Posdir, 2   ; Going left?
+0172   2983           00516             goto        DirectL
+0173   2989           00517             goto        DirectR    ; Going right then
+                      00518             
+0174   00A4           00519 DirectU     movwf       temp5
+0175   0CA4           00520             rrf         temp5, f
+0176   1803           00521             btfsc       STATUS, C
+0177   17A4           00522             bsf         temp5, 7
+0178   0824           00523             movf        temp5, w
+0179   0008           00524             return
+                      00525                                         
+017A   00A4           00526 DirectD     movwf       temp5
+017B   0DA4           00527             rlf         temp5, f
+017C   1803           00528             btfsc       STATUS, C
+017D   2180           00529             call        DirectDa
+017E   0824           00530             movf        temp5, w
+017F   0008           00531             return
+0180   01A4           00532 DirectDa    clrf        temp5
+0181   1424           00533             bsf         temp5, 0
+0182   0008           00534             return
+                      00535                     
+0183   00A4           00536 DirectL     movwf       temp5
+0184   0CB5           00537             rrf         Posind, f
+0185   1803           00538             btfsc       STATUS, C   ; verifie if active column is the most left (column 0)
+0186   17B5           00539             bsf         Posind, 7
+0187   0824           00540             movf        temp5, w
+0188   0008           00541             return
+                      00542 
+0189   00A4           00543 DirectR     movwf       temp5
+018A   0DB5           00544             rlf         Posind, f
+018B   1803           00545             btfsc       STATUS, C  ; verify if active column is the most left (column 4)
+018C   218F           00546             call        DirectRa
+018D   0824           00547             movf        temp5, w
+018E   0008           00548             return
+018F   01B5           00549 DirectRa    clrf        Posind
+0190   1435           00550             bsf         Posind, 0
+0191   0008           00551             return          
+                      00552                     
+0192   21AA           00553 LoadDisp    call        Decdot
+0193   082D           00554             movf        S1, w
+0194   04A5           00555             iorwf       C1, f
+0195   082E           00556             movf        S2, w
+0196   04A6           00557             iorwf       C2, f
+0197   082F           00558             movf        S3, w
+0198   04A7           00559             iorwf       C3, f
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0199   0830           00560             movf        S4, w
+019A   04A8           00561             iorwf       C4, f
+019B   0831           00562             movf        S5, w
+019C   04A9           00563             iorwf       C5, f 
+019D   0832           00564             movf        S6, w
+019E   042A           00565             iorwf       C6, w
+019F   0833           00566             movf        S7, w
+01A0   042B           00567             iorwf       C7, w
+01A1   0834           00568             movf        S8, w
+01A2   042C           00569             iorwf       C8, w
+                      00570             
+01A3   0839           00571             movf        pclath_save, w
+01A4   008A           00572             movwf       PCLATH
+01A5   0838           00573             movf        status_save, w
+01A6   0083           00574             movwf       STATUS
+01A7   0EB7           00575             swapf       w_save, f
+01A8   0E37           00576             swapf       w_save, w
+01A9   0009           00577             retfie
+                      00578 ;-------------------------------------------------------------------------------
+                      00579 ;----------------------------  Dot Counter Decrement  --------------------------
+                      00580 ;-------------------------------------------------------------------------------            
+01AA   30A0           00581 Decdot      movlw       d'160'
+01AB   00A1           00582             movwf       temp2
+01AC   01A2           00583             clrf        temp3
+01AD   0821           00584 dotdecloop  movf        temp2, w
+01AE   0084           00585             movwf       FSR
+01AF   3001           00586             movlw       d'1'
+01B0   0280           00587             subwf       INDF, f
+01B1   1C03           00588             btfss       STATUS, C
+01B2   0180           00589             clrf        INDF
+01B3   0800           00590             movf        INDF, w
+01B4   3E00           00591             addlw       d'0'
+01B5   1903           00592             btfsc       STATUS, Z  
+01B6   21CE           00593             call        delum           ; Deluminate LED's if RAM empty
+01B7   0AA2           00594             incf        temp3, f
+01B8   0AA2           00595             incf        temp3, f
+01B9   0AA1           00596             incf        temp2, f
+01BA   0821           00597             movf        temp2, w
+01BB   3ADF           00598             xorlw       d'223'
+01BC   1D03           00599             btfss       STATUS, Z
+01BD   29AD           00600             goto        dotdecloop
+01BE   0823           00601             movf        temp4, w
+01BF   0084           00602             movwf       FSR
+01C0   3000           00603             movlw       d'0'
+01C1   0700           00604             addwf       INDF, w
+01C2   1D03           00605             btfss       STATUS, Z
+01C3   21C7           00606             call        colapp
+01C4   083A           00607             movf        snake, w
+01C5   0080           00608             movwf       INDF
+01C6   0008           00609             return
+01C7   1B80           00610 colapp      btfsc       INDF, 7         ; Bit 7 set indicates apple
+01C8   29CB           00611             goto        apcl
+01C9   143B           00612             bsf         colind, 0
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01CA   0008           00613             return
+01CB   01BC           00614 apcl        clrf        apptmr
+01CC   0ABA           00615             incf        snake, f
+01CD   0008           00616             return          
+                      00617 
+01CE   30D7           00618 delum       movlw       LOW table      ; Deluminate chosen LED
+01CF   0722           00619             addwf       temp3,  w     
+01D0   3001           00620             movlw       HIGH table    
+01D1   1803           00621             btfsc       STATUS, C       
+01D2   3E01           00622             addlw       1              
+01D3   008A           00623             movwf       PCLATH          
+01D4   30D7           00624             movlw       LOW table     
+01D5   0722           00625             addwf       temp3, w       
+01D6   0082           00626             movwf       PCL                         
+01D7   1025           00627 table       bcf         C1, 0   
+01D8   0008           00628             return
+01D9   1026           00629             bcf         C2, 0   
+01DA   0008           00630             return
+01DB   1027           00631             bcf         C3, 0   
+01DC   0008           00632             return
+01DD   1028           00633             bcf         C4, 0   
+01DE   0008           00634             return
+01DF   1029           00635             bcf         C5, 0   
+01E0   0008           00636             return
+01E1   102A           00637             bcf         C6, 0   
+01E2   0008           00638             return
+01E3   102B           00639             bcf         C7, 0   
+01E4   0008           00640             return
+01E5   102C           00641             bcf         C8, 0   
+01E6   0008           00642             return
+01E7   10A5           00643             bcf         C1, 1   
+01E8   0008           00644             return
+01E9   10A6           00645             bcf         C2, 1
+01EA   0008           00646             return
+01EB   10A7           00647             bcf         C3, 1   
+01EC   0008           00648             return
+01ED   10A8           00649             bcf         C4, 1   
+01EE   0008           00650             return
+01EF   10A9           00651             bcf         C5, 1   
+01F0   0008           00652             return
+01F1   10AA           00653             bcf         C6, 1   
+01F2   0008           00654             return
+01F3   10AB           00655             bcf         C7, 1   
+01F4   0008           00656             return
+01F5   10AC           00657             bcf         C8, 1   
+01F6   0008           00658             return
+01F7   1125           00659             bcf         C1, 2   
+01F8   0008           00660             return
+01F9   1126           00661             bcf         C2, 2   
+01FA   0008           00662             return
+01FB   1127           00663             bcf         C3, 2   
+01FC   0008           00664             return
+01FD   1128           00665             bcf         C4, 2   
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01FE   0008           00666             return
+01FF   1129           00667             bcf         C5, 2   
+0200   0008           00668             return
+0201   112A           00669             bcf         C6, 2
+0202   0008           00670             return
+0203   112B           00671             bcf         C7, 2   
+0204   0008           00672             return
+0205   112C           00673             bcf         C8, 2   
+0206   0008           00674             return
+0207   11A5           00675             bcf         C1, 3   
+0208   0008           00676             return
+0209   11A6           00677             bcf         C2, 3   
+020A   0008           00678             return
+020B   11A7           00679             bcf         C3, 3   
+020C   0008           00680             return
+020D   11A8           00681             bcf         C4, 3   
+020E   0008           00682             return
+020F   11A9           00683             bcf         C5, 3   
+0210   0008           00684             return
+0211   11AA           00685             bcf         C6, 3   
+0212   0008           00686             return
+0213   11AB           00687             bcf         C7, 3   
+0214   0008           00688             return
+0215   11AC           00689             bcf         C8, 3   
+0216   0008           00690             return
+0217   1225           00691             bcf         C1, 4   
+0218   0008           00692             return
+0219   1226           00693             bcf         C2, 4   
+021A   0008           00694             return
+021B   1227           00695             bcf         C3, 4
+021C   0008           00696             return
+021D   1228           00697             bcf         C4, 4
+021E   0008           00698             return
+021F   1229           00699             bcf         C5, 4
+0220   0008           00700             return
+0221   122A           00701             bcf         C6, 4   
+0222   0008           00702             return
+0223   122B           00703             bcf         C7, 4
+0224   0008           00704             return
+0225   122C           00705             bcf         C8, 4
+0226   0008           00706             return
+0227   12A5           00707             bcf         C1, 5   
+0228   0008           00708             return
+0229   12A6           00709             bcf         C2, 5
+022A   0008           00710             return
+022B   12A7           00711             bcf         C3, 5   
+022C   0008           00712             return
+022D   12A8           00713             bcf         C4, 5   
+022E   0008           00714             return
+022F   12A9           00715             bcf         C5, 5   
+0230   0008           00716             return
+0231   12AA           00717             bcf         C6, 5   
+0232   0008           00718             return
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0233   12AB           00719             bcf         C7, 5   
+0234   0008           00720             return
+0235   12AC           00721             bcf         C8, 5   
+0236   0008           00722             return
+0237   1325           00723             bcf         C1, 6   
+0238   0008           00724             return
+0239   1326           00725             bcf         C2, 6   
+023A   0008           00726             return
+023B   1327           00727             bcf         C3, 6   
+023C   0008           00728             return
+023D   1328           00729             bcf         C4, 6   
+023E   0008           00730             return
+023F   1329           00731             bcf         C5, 6   
+0240   0008           00732             return
+0241   132A           00733             bcf         C6, 6   
+0242   0008           00734             return
+0243   132B           00735             bcf         C7, 6   
+0244   0008           00736             return
+0245   132C           00737             bcf         C8, 6   
+0246   0008           00738             return
+0247   13A5           00739             bcf         C1, 7   
+0248   0008           00740             return
+0249   13A6           00741             bcf         C2, 7   
+024A   0008           00742             return
+024B   13A7           00743             bcf         C3, 7   
+024C   0008           00744             return
+024D   13A8           00745             bcf         C4, 7   
+024E   0008           00746             return
+024F   13A9           00747             bcf         C5, 7   
+0250   0008           00748             return
+0251   13AA           00749             bcf         C6, 7   
+0252   0008           00750             return
+0253   13AB           00751             bcf         C7, 7   
+0254   0008           00752             return
+0255   13AC           00753             bcf         C8, 7   
+0256   0008           00754             return
+                      00755 ;-------------------------------------------------------------------------------
+                      00756 ;----------------------------  Dot Counter Increment  --------------------------
+                      00757 ;-------------------------------------------------------------------------------            
+0257   3EA0           00758 plcdot      addlw       d'160'      ;A0 -> fila 0 por defecto
+0258   1BA2           00759             btfsc       temp3, 7    ;fila 8?
+0259   3E38           00760             addlw       d'56'       ;D8
+025A   1B22           00761             btfsc       temp3, 6    ;fila 7?
+025B   3E30           00762             addlw       d'48'       ;D0
+025C   1AA2           00763             btfsc       temp3, 5    ;fila 6?
+025D   3E28           00764             addlw       d'40'       ;C8
+025E   1A22           00765             btfsc       temp3, 4    ;fila 5?
+025F   3E20           00766             addlw       d'32'       ;C8
+0260   19A2           00767             btfsc       temp3, 3    ;fila 4?
+0261   3E18           00768             addlw       d'24'       ;B8
+0262   1922           00769             btfsc       temp3, 2    ;fila 3?
+0263   3E10           00770             addlw       d'16'       ;B0
+0264   18A2           00771             btfsc       temp3, 1    ;fila 2?
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0265   3E08           00772             addlw       d'8'        ;A8
+0266   00A3           00773             movwf       temp4
+0267   307F           00774 Ilum        movlw       d'127'
+0268   00A5           00775             movwf       C1
+0269   00A6           00776             movwf       C2
+026A   00A7           00777             movwf       C3
+026B   00A8           00778             movwf       C4
+026C   00A9           00779             movwf       C5
+026D   00AA           00780             movwf       C6
+026E   00AB           00781             movwf       C7
+026F   00AC           00782             movwf       C8
+0270   0008           00783             return
+                      00784 ;-------------------------------------------------------------------------------
+                      00785 ;---------------------------  Random Apple Generator  --------------------------
+                      00786 ;-------------------------------------------------------------------------------            
+0271   3080           00787 Apple       movlw       b'10000000'
+0272   00BC           00788             movwf       apptmr          ; Clear count of 10 timer interrupts and states that an apple is
+                             present
+0273   2287           00789             call        Random          ; Fetch a "sort of" random number
+0274   3E9F           00790             addlw       d'159'          
+0275   0084           00791             movwf       FSR
+0276   0A84           00792 notclr      incf        FSR, f
+0277   0800           00793             movf        INDF, w
+0278   3E00           00794             addlw       d'0'
+0279   1903           00795             btfsc       STATUS, Z
+027A   2A82           00796             goto        addapple
+027B   0804           00797             movf        FSR, w
+027C   3E21           00798             addlw       d'33'           ;aseguramos que no sea mayor a 223
+027D   1C03           00799             btfss       STATUS, C
+027E   2A76           00800             goto        notclr          ; Location not clear, try again.
+027F   309F           00801             movlw       d'159'
+0280   0084           00802             movwf       FSR
+0281   2A76           00803             goto        notclr          ; Location not clear, try again.
+                      00804             
+0282   30FF           00805 addapple    movlw       d'255'
+0283   0080           00806             movwf       INDF            ; Seventh bit indicates apple to collision                      
+0284   3007           00807             movlw       d'7'            ; program.
+0285   07BD           00808             addwf       T1H, f          ; Increase snake speed.             
+0286   0008           00809             return                      
+                      00810 ;-------------------------------------------------------------------------------
+                      00811 ;----------------------------  Random Number Routine  --------------------------
+                      00812 ;-------------------------------------------------------------------------------            
+0287   083A           00813 Random      movf        snake, w
+0288   00A2           00814             movwf       temp3
+0289   3092           00815             movlw       LOW Rantbl      
+028A   0722           00816             addwf       temp3,  w     
+028B   3002           00817             movlw       HIGH Rantbl    
+028C   1803           00818             btfsc       STATUS, C       
+028D   3E01           00819             addlw       1              
+028E   008A           00820             movwf       PCLATH          
+028F   3092           00821             movlw       LOW Rantbl     
+0290   0722           00822             addwf       temp3, w       
+0291   0082           00823             movwf       PCL                         
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0292   3402           00824 Rantbl      retlw       d'2'
+0293   3431           00825             retlw       d'49'
+0294   3407           00826             retlw       d'7'
+0295   343E           00827             retlw       d'62'
+0296   340B           00828             retlw       d'11'
+0297   342A           00829             retlw       d'42'
+0298   3432           00830             retlw       d'50'
+0299   3425           00831             retlw       d'37'
+029A   3436           00832             retlw       d'54'
+029B   342F           00833             retlw       d'47'
+029C   3403           00834             retlw       d'3'
+029D   343B           00835             retlw       d'59'
+029E   343D           00836             retlw       d'61'
+029F   3415           00837             retlw       d'21'
+02A0   3406           00838             retlw       d'6'
+02A1   3428           00839             retlw       d'40'
+02A2   3413           00840             retlw       d'19'
+02A3   3422           00841             retlw       d'34'
+02A4   340A           00842             retlw       d'10'
+02A5   3408           00843             retlw       d'8'
+02A6   3429           00844             retlw       d'41'
+02A7   343A           00845             retlw       d'58'
+02A8   3412           00846             retlw       d'18'
+02A9   342E           00847             retlw       d'46'
+02AA   3435           00848             retlw       d'53'
+02AB   341A           00849             retlw       d'26'
+02AC   3433           00850             retlw       d'51'
+02AD   3419           00851             retlw       d'25'
+02AE   3421           00852             retlw       d'33'
+02AF   3401           00853             retlw       d'1'
+02B0   342D           00854             retlw       d'45'
+02B1   3409           00855             retlw       d'9'
+02B2   3400           00856             retlw       d'0'
+02B3   3439           00857             retlw       d'57'
+02B4   3423           00858             retlw       d'35'
+02B5   3420           00859             retlw       d'32'
+02B6   3434           00860             retlw       d'52'
+02B7   3411           00861             retlw       d'17'
+02B8   3404           00862             retlw       d'4'
+02B9   3416           00863             retlw       d'22'
+02BA   342B           00864             retlw       d'43'
+02BB   3437           00865             retlw       d'55'
+02BC   3405           00866             retlw       d'5'
+02BD   340C           00867             retlw       d'12'
+02BE   343C           00868             retlw       d'60'
+02BF   3410           00869             retlw       d'16'
+02C0   3414           00870             retlw       d'20'
+02C1   341E           00871             retlw       d'30'
+02C2   3427           00872             retlw       d'39'
+02C3   343F           00873             retlw       d'63'
+02C4   3418           00874             retlw       d'24'
+02C5   341F           00875             retlw       d'31'
+02C6   3438           00876             retlw       d'56'
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+02C7   3424           00877             retlw       d'36'
+02C8   3430           00878             retlw       d'48'
+02C9   340D           00879             retlw       d'13'
+02CA   341B           00880             retlw       d'27'
+02CB   340F           00881             retlw       d'15'
+02CC   3417           00882             retlw       d'23'
+02CD   3426           00883             retlw       d'38'
+02CE   342C           00884             retlw       d'44'
+02CF   341C           00885             retlw       d'28'
+02D0   340E           00886             retlw       d'14'
+02D1   341D           00887             retlw       d'29'
+                      00888         end
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+Apple                             00000271
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRG9                              00000001
+BRGH                              00000002
+Button                            000000D0
+C                                 00000000
+C1                                00000025
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2                                00000026
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+C3                                00000027
+C4                                00000028
+C5                                00000029
+C6                                0000002A
+C7                                0000002B
+C8                                0000002C
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+COL1                              PORTC, RC0
+COL2                              PORTC, RC1
+COL3                              PORTC, RC2
+COL4                              PORTC, RC3
+COL5                              PORTC, RC4
+COL6                              PORTC, RC5
+COL7                              PORTC, RC6
+COL8                              PORTC, RC7
+CREN                              00000004
+CSRC                              00000007
+Checkdir                          0000016D
+Col1                              0000010F
+Col2                              00000113
+Col3                              00000117
+Col4                              0000011B
+Col5                              0000011F
+Col6                              00000123
+Col7                              00000127
+Col8                              0000012B
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DOWN                              PORTB, RB6
+D_A                               00000005
+D_NOT_A                           00000005
+Decdot                            000001AA
+DirectD                           0000017A
+DirectDa                          00000180
+DirectL                           00000183
+DirectR                           00000189
+DirectRa                          0000018F
+DirectU                           00000174
+Disp                              00000085
+ECCPAS                            0000009C
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_DOWN                           000000DE
+GO_LEFT                           000000E3
+GO_NOT_DONE                       00000001
+GO_RIGHT                          000000E8
+GO_UP                             000000D9
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+Ilum                              00000267
+Init                              00000005
+Interrupt                         000000ED
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LEFT                              PORTB, RB5
+LTS                               00000001
+LoadDisp                          00000192
+MC1OUT                            00000007
+MC2OUT                            00000006
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PRTLD                             000000B6
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+PlacA                             0000014A
+PlacB                             0000014F
+PlacC                             00000154
+PlacD                             00000159
+PlacE                             0000015E
+PlacF                             00000163
+PlacG                             00000168
+Placecont                         0000012F
+Posdir                            00000036
+Posind                            00000035
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RIGHT                             PORTB, RB4
+ROW1                              PORTD, RD0
+ROW2                              PORTD, RD1
+ROW3                              PORTD, RD2
+ROW4                              PORTD, RD3
+ROW5                              PORTD, RD4
+ROW6                              PORTD, RD5
+ROW7                              PORTD, RD6
+ROW8                              PORTD, RD7
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+Random                            00000287
+Rantbl                            00000292
+S                                 00000003
+S1                                0000002D
+S2                                0000002E
+S3                                0000002F
+S4                                00000030
+S5                                00000031
+S6                                00000032
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+S7                                00000033
+S8                                00000034
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SWDTEN                            00000000
+SYNC                              00000004
+Start                             00000075
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1H                               0000003D
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+UP                                PORTB, RB7
+VCFG0                             00000004
+VCFG1                             00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+addapple                          00000282
+apcl                              000001CB
+apptmr                            0000003C
+clrram                            00000021
+colapp                            000001C7
+colind                            0000003B
+delay1                            0000005C
+delum                             000001CE
+dotdecloop                        000001AD
+gameover                          0000007B
+here                              00000055
+initloop                          00000061
+loop                              0000006E
+loopy                             0000005F
+loopy2                            0000005D
+msdelay                           0000006C
+notclr                            00000276
+pclath_save                       00000039
+plcdot                            00000257
+skip                              00000101
+snake                             0000003A
+status_save                       00000038
+table                             000001D7
+temp                              00000020
+temp2                             00000021
+temp3                             00000022
+temp4                             00000023
+temp5                             00000024
+w_save                            00000037
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:03:50         PAGE 31
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0240 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0280 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+02C0 : XXXXXXXXXXXXXXXX XX-------------- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   719
+Program Memory Words Free:  7473
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     8 reported,     0 suppressed
+
+
