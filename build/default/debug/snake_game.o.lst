@@ -1,4 +1,4 @@
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  1
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00040             cblock      0x20        
   00000020            00041             temp
   00000021            00042             temp2
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  2
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -111,12 +111,12 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00088             #define COL6    PORTC, RC5
                       00089             #define COL7    PORTC, RC6
                       00090             #define COL8    PORTC, RC7
-                      00091             #define LEFT    PORTB, RB4
-                      00092             #define RIGHT   PORTB, RB5
+                      00091             #define LEFT    PORTB, RB5
+                      00092             #define RIGHT   PORTB, RB4
                       00093             #define DOWN    PORTB, RB6
                       00094             #define UP      PORTB, RB7  
                       00095 ;-------------------------------------------------------------------------------
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  3
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0025   0A84           00141             incf        FSR, f
 0026   0804           00142             movf        FSR, w
 0027   3AE6           00143             xorlw       d'230'
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  4
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -234,7 +234,7 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0053   00AB           00190             movwf       C7
 0054   3000           00191             movlw       b'00000000'
 0055   00AC           00192             movwf       C8
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  5
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -293,7 +293,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 007D   00A4           00242             movwf       temp5
 007E   3064           00243 gameover    movlw       d'100'          
 007F   00A3           00244             movwf       temp4
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  6
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -352,7 +352,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00AA   1287           00295             bcf         COL6
 00AB   20D3           00296             call        Button
                       00297             
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  7
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -406,12 +406,12 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00D4   28DC           00343             goto        GO_UP
 00D5   1F06           00344             btfss       DOWN
 00D6   28E1           00345             goto        GO_DOWN
-00D7   1E06           00346             btfss       LEFT
+00D7   1E86           00346             btfss       LEFT
 00D8   28E6           00347             goto        GO_LEFT
-00D9   1E86           00348             btfss       RIGHT
+00D9   1E06           00348             btfss       RIGHT
 00DA   28EB           00349             goto        GO_RIGHT
 00DB   0008           00350             return          
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  8
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -470,7 +470,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0105   292E           00398             goto        Col8
 0106   1B35           00399             btfsc       Posind, 6   ; Are we column 7?
 0107   292A           00400             goto        Col7
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE  9
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -529,7 +529,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0138   01AE           00451             clrf        S2
 0139   01AD           00452             clrf        S1
                       00453             
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 10
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -588,7 +588,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 016A   0008           00504             return
 016B   00AE           00505 PlacG       movwf       S2
 016C   00A2           00506             movwf       temp3       ; Save column offset    
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 11
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -647,7 +647,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0199   04A6           00557             iorwf       C2, f
 019A   082F           00558             movf        S3, w
 019B   04A7           00559             iorwf       C3, f
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 12
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -658,11 +658,11 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 019E   0831           00562             movf        S5, w
 019F   04A9           00563             iorwf       C5, f 
 01A0   0832           00564             movf        S6, w
-01A1   042A           00565             iorwf       C6, w
+01A1   04AA           00565             iorwf       C6, f
 01A2   0833           00566             movf        S7, w
-01A3   042B           00567             iorwf       C7, w
+01A3   04AB           00567             iorwf       C7, f
 01A4   0834           00568             movf        S8, w
-01A5   042C           00569             iorwf       C8, w
+01A5   04AC           00569             iorwf       C8, f
                       00570             
 01A6   0839           00571             movf        pclath_save, w
 01A7   008A           00572             movwf       PCLATH
@@ -706,7 +706,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 01CA   1B80           00610 colapp      btfsc       INDF, 7         ; Bit 7 set indicates apple
 01CB   29CE           00611             goto        apcl
 01CC   143B           00612             bsf         colind, 0
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 13
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 13
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -765,7 +765,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 01FE   1127           00663             bcf         C3, 2   
 01FF   0008           00664             return
 0200   1128           00665             bcf         C4, 2   
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 14
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 14
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -824,7 +824,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0233   0008           00716             return
 0234   12AA           00717             bcf         C6, 5   
 0235   0008           00718             return
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 15
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 15
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -877,13 +877,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 025F   1AA2           00763             btfsc       temp3, 5    ;fila 6?
 0260   3E28           00764             addlw       d'40'       ;C8
 0261   1A22           00765             btfsc       temp3, 4    ;fila 5?
-0262   3E20           00766             addlw       d'32'       ;C8
+0262   3E20           00766             addlw       d'32'       ;C0
 0263   19A2           00767             btfsc       temp3, 3    ;fila 4?
 0264   3E18           00768             addlw       d'24'       ;B8
 0265   1922           00769             btfsc       temp3, 2    ;fila 3?
 0266   3E10           00770             addlw       d'16'       ;B0
 0267   18A2           00771             btfsc       temp3, 1    ;fila 2?
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 16
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 16
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -891,7 +891,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 
 0268   3E08           00772             addlw       d'8'        ;A8
 0269   00A3           00773             movwf       temp4
-026A   307F           00774 Ilum        movlw       d'127'
+026A   30FF           00774 Ilum        movlw       d'255'
 026B   00A5           00775             movwf       C1
 026C   00A6           00776             movwf       C2
 026D   00A7           00777             movwf       C3
@@ -916,7 +916,8 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 027C   1903           00795             btfsc       STATUS, Z
 027D   2A85           00796             goto        addapple
 027E   0804           00797             movf        FSR, w
-027F   3E21           00798             addlw       d'33'           ;aseguramos que no sea mayor a 223
+027F   3E21           00798             addlw       d'33'           ;aseguramos que no sea mayor a 223; 159+63 = 222-> peor caso - i
+                            dentificar mediante carry haciendo 255-222 = 33
 0280   1C03           00799             btfss       STATUS, C
 0281   2A79           00800             goto        notclr          ; Location not clear, try again.
 0282   309F           00801             movlw       d'159'
@@ -941,13 +942,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0291   008A           00820             movwf       PCLATH          
 0292   3095           00821             movlw       LOW Rantbl     
 0293   0722           00822             addwf       temp3, w       
-0294   0082           00823             movwf       PCL                         
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 17
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 17
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0294   0082           00823             movwf       PCL                         
 0295   3402           00824 Rantbl      retlw       d'2'
 0296   3431           00825             retlw       d'49'
 0297   3407           00826             retlw       d'7'
@@ -1000,13 +1001,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 02C6   343F           00873             retlw       d'63'
 02C7   3418           00874             retlw       d'24'
 02C8   341F           00875             retlw       d'31'
-02C9   3438           00876             retlw       d'56'
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 18
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 18
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+02C9   3438           00876             retlw       d'56'
 02CA   3424           00877             retlw       d'36'
 02CB   3430           00878             retlw       d'48'
 02CC   340D           00879             retlw       d'13'
@@ -1019,7 +1020,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 02D3   340E           00886             retlw       d'14'
 02D4   341D           00887             retlw       d'29'
                       00888         end
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 19
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 19
 
 
 SYMBOL TABLE
@@ -1078,7 +1079,7 @@ BRG5                              00000005
 BRG6                              00000006
 BRG7                              00000007
 BRG8                              00000000
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 20
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 20
 
 
 SYMBOL TABLE
@@ -1137,7 +1138,7 @@ CCP2M2                            00000002
 CCP2M3                            00000003
 CCP2X                             00000005
 CCP2Y                             00000004
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 21
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 21
 
 
 SYMBOL TABLE
@@ -1196,7 +1197,7 @@ DirectRa                          00000192
 DirectU                           00000177
 Disp                              00000088
 ECCPAS                            0000009C
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 22
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 22
 
 
 SYMBOL TABLE
@@ -1255,13 +1256,13 @@ IRP                               00000007
 Ilum                              0000026A
 Init                              00000005
 Interrupt                         000000F0
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 23
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 23
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
-LEFT                              PORTB, RB4
+LEFT                              PORTB, RB5
 LTS                               00000001
 LoadDisp                          00000195
 MC1OUT                            00000007
@@ -1314,7 +1315,7 @@ PEN                               00000002
 PIE1                              0000008C
 PIE2                              0000008D
 PIR1                              0000000C
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 24
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 24
 
 
 SYMBOL TABLE
@@ -1373,7 +1374,7 @@ RBIF                              00000000
 RC0                               00000000
 RC1                               00000001
 RC2                               00000002
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 25
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 25
 
 
 SYMBOL TABLE
@@ -1407,7 +1408,7 @@ RE1                               00000001
 RE2                               00000002
 RE3                               00000003
 READ_WRITE                        00000002
-RIGHT                             PORTB, RB5
+RIGHT                             PORTB, RB4
 ROW1                              PORTD, RD0
 ROW2                              PORTD, RD1
 ROW3                              PORTD, RD2
@@ -1432,7 +1433,7 @@ S3                                0000002F
 S4                                00000030
 S5                                00000031
 S6                                00000032
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 26
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 26
 
 
 SYMBOL TABLE
@@ -1491,7 +1492,7 @@ T1INSYNC                          00000002
 T1OSCEN                           00000003
 T1SYNC                            00000002
 T2CKPS0                           00000000
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 27
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 27
 
 
 SYMBOL TABLE
@@ -1550,7 +1551,7 @@ TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
 TRISD3                            00000003
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 28
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 28
 
 
 SYMBOL TABLE
@@ -1609,7 +1610,7 @@ WPUB1                             00000001
 WPUB2                             00000002
 WPUB3                             00000003
 WPUB4                             00000004
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 29
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 29
 
 
 SYMBOL TABLE
@@ -1668,7 +1669,7 @@ _IESO_OFF                         00003BFF
 _IESO_ON                          00003FFF
 _INTOSC                           00003FFD
 _INTOSCIO                         00003FFC
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 30
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 30
 
 
 SYMBOL TABLE
@@ -1724,7 +1725,7 @@ temp3                             00000022
 temp4                             00000023
 temp5                             00000024
 w_save                            00000037
-MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  1:34:30         PAGE 31
+MPASM 5.87                    SNAKE_GAME.ASM   6-8-2022  13:07:59         PAGE 31
 
 
 MEMORY USAGE MAP ('X' = Used,  '-' = Unused)

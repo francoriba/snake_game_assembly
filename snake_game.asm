@@ -1,14 +1,20 @@
+;****************************************************************************************************************************************************
+;****************************************************************************************************************************************************
+; AUTORES: Franco Riba y Kevil Walter Reynoso Choque 
+; FECHA: 08/06/2022
+; HARDWARE: PIC16F887
+; DESCRIPCIÓN: Videojuego Snake con display en matriz 8x8, programado en lenguaje ensamblador
+; CONTEXTO: Este es el proyecto integrador de fin de curso de la asignatura Electrónica Digital 2, de la FCEFyN, Universidad Nacional de Córdoba, UNC
+;*****************************************************************************************************************************************************
+;*****************************************************************************************************************************************************
 ;-------------------------------------------------------------------------------
-; FILE: LEDsnake
-; AUTH: Ed's Projects
-; DATE: 01/09/2016
-; DESC: 5x7 LED Dot Matrix Snake Game
+;-----------------------------  Precompilación  --------------------------------
 ;-------------------------------------------------------------------------------
 	LIST      	P = 16F887, R=DEC	
-	include		<P16F887.inc>		; Define configurations, registers, etc.
+	include		<P16F887.inc>		
  __CONFIG _CONFIG1, _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_OFF & _FCMEN_OFF & _LVP_OFF
 ;-------------------------------------------------------------------------------
-;-----------------------------  Port Definitions  ------------------------------
+;-----------------------------  Descripción de puertos en Hardware  ------------
 ;-------------------------------------------------------------------------------	    
 ; PortD - Output - RD0 - Pin 19 - Row 1
 ; PortD - Output - RD1 - Pin 20 - Row 2
@@ -88,8 +94,8 @@
 	    #define COL6    PORTC, RC5
 	    #define COL7    PORTC, RC6
 	    #define COL8    PORTC, RC7
-	    #define LEFT    PORTB, RB4
-	    #define RIGHT   PORTB, RB5
+	    #define LEFT    PORTB, RB5
+	    #define RIGHT   PORTB, RB4
 	    #define DOWN    PORTB, RB6
 	    #define UP	    PORTB, RB7  
 ;-------------------------------------------------------------------------------
@@ -562,11 +568,11 @@ LoadDisp    call	Decdot
 	    movf	S5, w
 	    iorwf	C5, f 
 	    movf	S6, w
-	    iorwf	C6, w
+	    iorwf	C6, f
 	    movf	S7, w
-	    iorwf	C7, w
+	    iorwf	C7, f
 	    movf	S8, w
-	    iorwf	C8, w
+	    iorwf	C8, f
 	    
 	    movf	pclath_save, w
 	    movwf	PCLATH
@@ -595,7 +601,7 @@ dotdecloop  movf	temp2, w
 	    incf	temp3, f
 	    incf	temp2, f
 	    movf	temp2, w
-	    xorlw	d'223'
+	    xorlw	d'224'
 	    btfss	STATUS, Z
 	    goto	dotdecloop
 	    movf	temp4, w
@@ -771,7 +777,7 @@ plcdot	    addlw	d'160'	    ;A0 -> fila 0 por defecto
 	    btfsc	temp3, 1    ;fila 2?
 	    addlw	d'8'	    ;A8
 	    movwf	temp4
-Ilum	    movlw	d'127'
+Ilum	    movlw	d'255'
 	    movwf	C1
 	    movwf	C2
 	    movwf	C3
