@@ -14,32 +14,31 @@
 	include		<P16F887.inc>		
  __CONFIG _CONFIG1, _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_OFF & _FCMEN_OFF & _LVP_OFF
 ;-------------------------------------------------------------------------------
-;-----------------------------  Descripción de puertos en Hardware  ------------
+;-----------------------------  Descripción de Puertos en Hardware  ------------
 ;-------------------------------------------------------------------------------	    
-; PortD - Output - RD0 - Pin 19 - Row 1
-; PortD - Output - RD1 - Pin 20 - Row 2
-; PortD - Output - RD2 - Pin 21 - Row 3
-; PortD - Output - RD3 - Pin 22 - Row 4
-; PortD - Output - RD4 - Pin 27 - Row 5	
-; PortD - Output - RD5 - Pin 28 - Row 6
-; PortD - Output - RD6 - Pin 29 - Row 7	
-; PortD - Output - RD7 - Pin 30 - Row 7
+; PORTD - Salida - RD0 - Pin 19 - Row 1
+; PORTD - Salida - RD1 - Pin 20 - Row 2
+; PORTD - Salida - RD2 - Pin 21 - Row 3
+; PORTD - Salida - RD3 - Pin 22 - Row 4
+; PORTD - Salida - RD4 - Pin 27 - Row 5	
+; PORTD - Salida - RD5 - Pin 28 - Row 6
+; PORTD - Salida - RD6 - Pin 29 - Row 7	
+; PORTD - Salida - RD7 - Pin 30 - Row 7
 
-; PortC - Output - RC0 - Pin 15 - Column 1
-; PortC - Output - RC1 - Pin 16 - Column 2
-; PortC - Output - RC2 - Pin 17 - Column 3
-; PortC - Output - RC3 - Pin 18 - Column 4
-; PortC - Output - RC4 - Pin 23 - Column 5
-; PortC - Output - RC5 - Pin 24 - Column 6
-; PortC - Output - RC6 - Pin 25 - Column 7
-; PortC - Output - RC7 - Pin 26 - Column 7
+; PORTC - Salida - RC0 - Pin 15 - Column 1
+; PORTC - Salida - RC1 - Pin 16 - Column 2
+; PORTC - Salida - RC2 - Pin 17 - Column 3
+; PORTC - Salida - RC3 - Pin 18 - Column 4
+; PORTC - Salida - RC4 - Pin 23 - Column 5
+; PORTC - Salida - RC5 - Pin 24 - Column 6
+; PORTC - Salida - RC6 - Pin 25 - Column 7
+; PORTC - Salida - RC7 - Pin 26 - Column 7
 	
-; PortB - Input - RB7 - Pin 40 - Button Up
-; PortB - Input - RB6 - Pin 39 - Button Down
-; PortB - Input - RB5 - Pin 38 - Button Left
-; PortB - Input - RB4 - Pin 37 - Button Right	
-	
-; PortA - Output - RA4 - Pin 3 - Provides pull-up voltage for button resistors		
+; PORTB - Entrada - RB7 - Pin 40 - Botón DOWN
+; PORTB - Entrada - RB6 - Pin 39 - Botón UP
+; PORTB - Entrada - RB5 - Pin 38 - Botón LEFT
+; PORTB - Entrada - RB4 - Pin 37 - Botón RIGHT
+		
 ;-------------------------------------------------------------------------------
 ;--------------------------------  Variables  ---------------------------------- 
 ;-------------------------------------------------------------------------------
@@ -49,34 +48,34 @@
 	    temp3
 	    temp4
 	    temp5
-	    C1			;   Column 1 Matrix Display
-	    C2
-	    C3
-	    C4
-	    C5			;   Column 5 Matrix Display
-	    C6
-	    C7
-	    C8
-	    S1			;   Snake Position Column 1
-	    S2			;   Snake Position Column 2
-	    S3			;   Snake Position Column 3
-	    S4			;   Snake Position Column 4
-	    S5			;   Snake Position Column 5
-	    S6			;   Snake Position Column 6
-	    S7			;   Snake Position Column 7
-	    S8			;   Snake Position Column 8
-	    Posind		;   Column Indicator, bit4 - 0
-	    Posdir		;   Snake Direction 0-up, 1-down, 2-left, 3-right
+	    C1			;   Columna 1 de display de matriz
+	    C2			;   Columna 2 de display de matriz
+	    C3			;   Columna 3 de display de matriz
+	    C4			;   Columna 4 de display de matriz
+	    C5			;   Columna 5 de display de matriz
+	    C6			;   Columna 6 de display de matriz
+	    C7			;   Columna 7 de display de matriz
+	    C8			;   Columna 8 de display de matriz
+	    S1			;   Posición del snake en la columna 1 
+	    S2			;   Posición del snake en la columna 2 
+	    S3			;   Posición del snake en la columna 3 
+	    S4			;   Posición del snake en la columna 4 
+	    S5			;   Posición del snake en la columna 5 
+	    S6			;   Posición del snake en la columna 6 
+	    S7			;   Posición del snake en la columna 7 
+	    S8			;   Posición del snake en la columna 8 
+	    Posind		;   Indicador de columna, bits 4-0
+	    Posdir		;   Dirección del snake 0-up, 1-down, 2-left, 3-right
 	    w_save
 	    status_save
 	    pclath_save
-	    snake		;   Snake length
-	    colind		;   Collision Indicator
-	    apptmr		;   Apple timer
+	    snake		;   Tamaño del snake (cant de segmentos)
+	    colind		;   Indicador de colisión
+	    rattmr		;   Indica si ocurrieron las suficientes interrupciones del timer para agregar una nueva rata 
 	    T1H			;   Timer1 High
 	    endc
 ;-------------------------------------------------------------------------------
-;-----------------------------  Define Symbols  --------------------------------
+;-----------------------------  Simbolos  --------------------------------------
 ;-------------------------------------------------------------------------------
 	    #define ROW1    PORTD, RD0		
 	    #define ROW2    PORTD, RD1
@@ -98,36 +97,34 @@
 	    #define RIGHT   PORTB, RB4
 	    #define DOWN    PORTB, RB6
 	    #define UP	    PORTB, RB7  
-;-------------------------------------------------------------------------------
-;-------------------------------  Program Code  --------------------------------
-;-------------------------------------------------------------------------------
+
             org	        0 
 	    goto	Init
 ;-------------------------------------------------------------------------------
-;-----------------------------  Interrupt Vector  ------------------------------
+;-----------------------------  Vector de interrupción  ------------------------
 ;-------------------------------------------------------------------------------
             org	        04
 	    goto	Interrupt
 ;-------------------------------------------------------------------------------
-;--------------------------  Initialisation of Ports  --------------------------
+;--------------------------  Inicializacion de Puertos  ------------------------
 ;-------------------------------------------------------------------------------
-Init	    ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
+Init	    ;Confiracion de pines de PORTC y PORTD como salidas, PORTB<RB7-RB4> como entradas
 	    banksel	TRISB
 	    movlw	0xF0
 	    movwf	TRISB
 	    clrf	TRISC		
 	    clrf	TRISD
-	    ;all analogue pins to digital
+	    ;todos los pines analogicos los hacemos digitales
 	    banksel	ANSEL
 	    clrf	ANSEL
 	    clrf	ANSELH
-	    ;set PORTB and PORTD pins LOW and PORTC pins HIGH
+	    ;comenzamos con pines de PORTB y PORTD seteados en bajo, y pines de PORTC seteados en alto
 	    banksel	PORTB
 	    clrf	PORTB
 	    clrf	PORTC
 	    movlw	0xFF
 	    movwf	PORTD
-	    ;clear variable's registers 	
+	    ;limpiamos los registros de variables para la lógica	
 	    clrf	Posdir
 	    clrf	S1
 	    clrf	S2
@@ -138,9 +135,9 @@ Init	    ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
 	    clrf	S7
 	    clrf	S8
 	    clrf	colind
-	    clrf	apptmr
-	    movlw	d'3'
-	    movwf	snake		; Start with 3 snake segments
+	    clrf	rattmr
+	    movlw	d'1'
+	    movwf	snake		; El snake empieza con un tamaño de 1 segmento
 	    movlw	d'160'
 	    movwf	FSR
 clrram	    clrf	INDF
@@ -151,7 +148,7 @@ clrram	    clrf	INDF
 	    goto	clrram
 	    
 ;-------------------------------------------------------------------------------
-;-----------------------  Interrupt Timer Initialisation  ----------------------
+;-----------------------  Inicialización de la int del TMR0  -------------------
 ;-------------------------------------------------------------------------------
 	    banksel	T1CON
 	    movlw	b'00110100'	;Inicialmente inhabilitado, trabajando con clock interno, no sincronizado ,osc LP apagado ,  prescaler 1:8, gate inhabilitado
@@ -161,31 +158,31 @@ clrram	    clrf	INDF
 	    movlw	b'11011011'
 	    movwf	TMR1L		; genera interrupciones del timer1 cada 0.25s
 	    banksel	PIE1
-	    bsf		PIE1, TMR1IE	; Enable Timer 1 Interrupt
+	    bsf		PIE1, TMR1IE	;Habilitación de interrupciones por TMR1
 	    banksel	PIR1
 	    bcf		PIR1, TMR1IF
-	    bsf		INTCON, GIE	;Enable Global Interrupts
-	    bsf		INTCON, PEIE	;Enable Peripheral Interrupts for TMR1
+	    bsf		INTCON, GIE	;Interrupciones Globales Habilitadas
+	    bsf		INTCON, PEIE	;Habilitación por periféricos habilitada (para el TMR1)
 ;-------------------------------------------------------------------------------
-;--------------------------------  Game Initialisaton  -------------------------
+;--------------------------------  Inicialización del Juego  -------------------
 ;-------------------------------------------------------------------------------
-	    ;enable pull ups for RB7-RB4
+	    ;habilitamos pull-ups para RB7-RB4
 	    banksel	OPTION_REG
 	    bcf		OPTION_REG, NOT_RBPU
 	    banksel	WPUB
 	    movlw	0xF0
 	    movwf	WPUB
 	    banksel	PORTA
-	    movlw	d'2'
-	    call	delay1		; Wait 0.5 second
-	    ;here we can set where we want the snake to spawn, we decide to spawn in column 4, row 4
+	    movlw	d'2'		;cargamos variable para retardo por software 
+	    call	delay1		; Demora de 0.5s
+	    ;definimos el punto donde spawnea la serpiente
 	    movlw	b'00000000'
 	    movwf	C1
 	    movlw	b'00000000'
 	    movwf	C2
 	    movlw	b'00000000'
 	    movwf	C3
-	    movlw	b'00001000'
+	    movlw	b'00001000'	    ; por d efecto spawnea en la columna 4, fila 4
 	    movwf	C4
 	    movwf	S4
 	    movlw	b'00000000'
@@ -208,10 +205,10 @@ here	    call	Button		;verifica si se presiona un botón, y en caso afirmativo qu
 	    bsf		T1CON, TMR1ON   ; Start timer counting
 	    goto	Start
 ;-------------------------------------------------------------------------------
-;--------------------------------  Delay Loops  --------------------------------
+;--------------------------------  Loops de Delays  ----------------------------
 ;-------------------------------------------------------------------------------
 delay1	    movwf	temp4
-loopy2	    movlw	d'100'	    ;mmultiplos ode 2.5ms
+loopy2	    movlw	d'100'	    ;multiplos ode 2.5ms
 	    movwf	temp3
 loopy	    movlw	d'250'
 	    movwf	temp
@@ -257,7 +254,7 @@ gameover    movlw	d'100'
 	    goto	gameover
 	    goto	Init		;volver a empezar
 ;-------------------------------------------------------------------------------
-;--------------------------------  Display Cycle  ------------------------------
+;--------------------------------  Ciclo de Display  ---------------------------
 ;-------------------------------------------------------------------------------	    	    
 Disp	    movf	C1, w
 	    call	PRTLD
@@ -343,7 +340,7 @@ PRTLD	    movwf	temp
 	    bcf		ROW8
 	    return
 ;-------------------------------------------------------------------------------
-;--------------------------------  Button Input  -------------------------------
+;--------------------------------  Entrada de Pulsador  ------------------------
 ;-------------------------------------------------------------------------------	
 Button	    btfss	UP
 	    goto	GO_UP
@@ -354,68 +351,68 @@ Button	    btfss	UP
 	    btfss	RIGHT
 	    goto	GO_RIGHT
 	    return	    
-GO_UP	    btfsc	Posdir, 1	; Make sure we can't go back on ourself
+GO_UP	    btfsc	Posdir, 1	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_DOWN	
 	    movlw	b'00000001'
 	    movwf	Posdir
 	    return
-GO_DOWN	    btfsc	Posdir, 0
+GO_DOWN	    btfsc	Posdir, 0	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_UP
 	    movlw	b'00000010'
 	    movwf	Posdir
 	    return
-GO_LEFT	    btfsc	Posdir, 3
+GO_LEFT	    btfsc	Posdir, 3	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_RIGHT
 	    movlw	b'00000100'
 	    movwf	Posdir
 	    return
-GO_RIGHT    btfsc	Posdir, 2
+GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_LEFT
 	    movlw	b'00001000'
 	    movwf	Posdir
 	    return	    
 ;-------------------------------------------------------------------------------
-;-----------------------------  Interrupt Program  -----------------------------
+;-----------------------------  Programa de Intrrupción  -----------------------
 ;-------------------------------------------------------------------------------	    
-Interrupt   bcf		PIR1, TMR1IF	;clear flag 
-	    movwf	w_save		;start of context saving
+Interrupt   bcf		PIR1, TMR1IF	;limpiamos flag del timer1
+	    movwf	w_save		;guardamos contexto
 	    movf	STATUS, w
 	    clrf	STATUS
 	    movwf	status_save
 	    movf	PCLATH, w
-	    movwf	pclath_save	;end of context saving
+	    movwf	pclath_save	
 	    
-	    bcf		T1CON, TMR1ON   ; Stop timer counting
+	    bcf		T1CON, TMR1ON   ; Detenemos el timer
 	    movf	T1H, w
 	    movwf	TMR1H
 	    movlw	b'11011011'
-	    movwf	TMR1L		; Half a second
-	    bsf		T1CON, TMR1ON   ; Start timer counting
+	    movwf	TMR1L		; Cargamos el timer para que interrumpa cada 0,5 s
+	    bsf		T1CON, TMR1ON   ; Lanzamos el timer nuevamente
 	    
-	    btfsc	apptmr, 7	; Bit 7 indicates if there is an aplle still not eaten in de board
-	    goto	skip		;skip count, if there is an apple in the board, don't increment the "apple placement" counter
-	    incf	apptmr, f	;if there is no apple in the board, increase the count of timer interruptions, and when it goes to 10 go place a new apple in the board
-	    movf	apptmr, w
+	    btfsc	rattmr, 7	; El bit 7 inidica si hay una rata todavía no comida en el tablero
+	    goto	skip		;saltear, si ya hay una rat no se incrementa el contador de 10 interrupciones del timer1
+	    incf	rattmr, f	;si no hay rata en la tabla, incrementamos el contador de 10 interrupciones del timer1
+	    movf	rattmr, w	; y cuando llega a 10 colocamos una nueva rata en la tabla
 	    xorlw	d'10'
 	    btfsc	STATUS, Z
-	    call	Apple
-skip	    ;depending in wich column was the snake´s head when the interruption ocurred, 
-	    btfsc	Posind, 7   ; Are we column 8?
+	    call	Rat
+skip	    ;averiguamos en que columna se encotnraba el head del snake al momento de la interrupción 
+	    btfsc	Posind, 7   ; Columna 8?
 	    goto	Col8
-	    btfsc	Posind, 6   ; Are we column 7?
+	    btfsc	Posind, 6   ; Columna 7?
 	    goto	Col7
-	    btfsc	Posind, 5   ; Are we column 6?
+	    btfsc	Posind, 5   ; Columna 6?
 	    goto	Col6
-	    btfsc	Posind, 4   ; Are we column 5?
+	    btfsc	Posind, 4   ; Columna 5?
 	    goto	Col5
-	    btfsc	Posind, 3   ; Are we column 4?
+	    btfsc	Posind, 3   ; Columna 4?
 	    goto	Col4
-	    btfsc	Posind, 2   ; Are we column 3?
+	    btfsc	Posind, 2   ; Columna 3?
 	    goto	Col3
-	    btfsc	Posind, 1   ; Are we column 2?
+	    btfsc	Posind, 1   ; Columna 2?
 	    goto	Col2
-				    ; Then we can only be at column 1	    
-Col1	    movf	S1, w
+				    ; Entonces la columna 1    
+	    movf	S1, w
 	    call	Checkdir
 	    call	Placecont
 	    goto	LoadDisp
@@ -457,80 +454,79 @@ Placecont   clrf	S8
 	    clrf	S2
 	    clrf	S1
 	    
-	    btfsc	Posind, 7   ; Are we to place contents in column 8?
+	    btfsc	Posind, 7   ; Debemos cargar registro de la columna 8?
 	    goto	PlacA
-	    btfsc	Posind, 6   ; Are we to place contents in column 7?
+	    btfsc	Posind, 6   ; Debemos cargar  registro de la columna 7?
 	    goto	PlacB
-	    btfsc	Posind, 5   ; Are we to place contents in column 6?
+	    btfsc	Posind, 5   ; Debemos cargar registro de la columna 6?
 	    goto	PlacC
-	    btfsc	Posind, 4   ; Are we to place contents in column 5?
+	    btfsc	Posind, 4   ; Debemos cargar  registro de la columna 5?
 	    goto	PlacD
-	    btfsc	Posind, 3   ; Are we to place contents in column 4?
+	    btfsc	Posind, 3   ; Debemos cargar registro de la columna 4?
 	    goto	PlacE
-	    btfsc	Posind, 2   ; Are we to place contents in column 3?
+	    btfsc	Posind, 2   ; Debemos cargar registro de la columna 3?
 	    goto	PlacF
-	    btfsc	Posind, 1   ; Are we to place contents in column 2?
+	    btfsc	Posind, 1   ; Debemos cargar registro de la columna 2?
 	    goto	PlacG		 
-	    
-	    movwf	S1	    ; Then we must place them in column 1
+	    movwf	S1	    ; Debemos cargar registro de la columna 1
 	    movwf	temp3
 	    clrw
-	    call	plcdot	    ; Place dot in counter
+	    call	plcdot	    ; El registro a cargar mapea con la columna 1, ahora averiguamos con que fila mapea
 	    return
 	    
 PlacA	    movwf	S8
-	    movwf	temp3	    ; Save column offset	    
-	    movlw	d'7'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	    
+	    movlw	d'7'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 8, ahora averiguamos con que fila mapea
 	    return	
 PlacB	    movwf	S7
-	    movwf	temp3	    ; Save column offset	    
-	    movlw	d'6'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 	    
+	    movlw	d'6'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 7, ahora averiguamos con que fila mapea
 	    return	
 PlacC	    movwf	S6
-	    movwf	temp3	    ; Save column offset	    
-	    movlw	d'5'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 	    
+	    movlw	d'5'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 6, ahora averiguamos con que fila mapea
 	    return	
 PlacD	    movwf	S5
-	    movwf	temp3	    ; Save column offset	    
-	    movlw	d'4'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 	    
+	    movlw	d'4'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 5, ahora averiguamos con que fila mapea
 	    return	    
 PlacE	    movwf	S4
-	    movwf	temp3	    ; Save column offset 
-	    movlw	d'3'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 
+	    movlw	d'3'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 4, ahora averiguamos con que fila mapea
 	    return				    		
 PlacF	    movwf	S3
-	    movwf	temp3	    ; Save column offset	    
-	    movlw	d'2'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 	    
+	    movlw	d'2'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 3, ahora averiguamos con que fila mapea
 	    return
 PlacG	    movwf	S2
-	    movwf	temp3	    ; Save column offset    
-	    movlw	d'1'	    ; Tells next program what column we're in
-	    call	plcdot	    ; Place dot in counter
+	    movwf	temp3	    ; guardamos el offset de la columna	 
+	    movlw	d'1'	    ; Indicamos la columna en la que estamos
+	    call	plcdot	    ; El registro a cargar mapea con la columna 2, ahora averiguamos con que fila mapea
 	    return	    
 	    
-Checkdir    btfsc	Posdir, 0   ; Going up?
+Checkdir    btfsc	Posdir, 0   ; se desplaza hacia arriba?
 	    goto	DirectU
-	    btfsc	Posdir, 1   ; Going down?
+	    btfsc	Posdir, 1   ; se desplaza hacia abajo?
 	    goto	DirectD
-	    btfsc	Posdir, 2   ; Going left?
+	    btfsc	Posdir, 2   ; se desplaza a la izquierda?
 	    goto	DirectL
-	    goto	DirectR    ; Going right then
+	    goto	DirectR     ;entonces se desplaza a la derecha
 	    
 DirectU	    movwf	temp5
-	    rrf		temp5, f
+	    rrf		temp5, f    ; verifiamos si la columna activa es la del extremo superior
 	    btfsc	STATUS, C
 	    bsf		temp5, 7
 	    movf	temp5, w
 	    return
 					
 DirectD	    movwf	temp5
-	    rlf		temp5, f
+	    rlf		temp5, f    ; verifiamos si la columna activa es la del extremo inferior
 	    btfsc	STATUS, C
 	    call	DirectDa
 	    movf	temp5, w
@@ -541,14 +537,14 @@ DirectDa    clrf	temp5
 	    	    
 DirectL	    movwf	temp5
 	    rrf		Posind, f
-	    btfsc	STATUS, C   ; verifie if active column is the most left (column 0)
+	    btfsc	STATUS, C   ; verifiamos si la columna activa es la del extremo izquierdo
 	    bsf		Posind, 7
 	    movf	temp5, w
 	    return
 
 DirectR	    movwf	temp5
 	    rlf		Posind, f
-	    btfsc	STATUS, C  ; verify if active column is the most left (column 4)
+	    btfsc	STATUS, C  ; verifiamos si la columna activa es la del extremo derecho
 	    call	DirectRa
 	    movf	temp5, w
 	    return
@@ -582,7 +578,7 @@ LoadDisp    call	Decdot
 	    swapf	w_save, w
 	    retfie
 ;-------------------------------------------------------------------------------
-;----------------------------  Dot Counter Decrement  --------------------------
+;----------------------------  Contador de decremento de puntos  --------------- ; para el decremento de los registros cargados previamente por el head del snake
 ;-------------------------------------------------------------------------------	    
 Decdot	    movlw	d'160'
 	    movwf	temp2
@@ -596,32 +592,32 @@ dotdecloop  movf	temp2, w
 	    movf	INDF, w
 	    addlw	d'0'
 	    btfsc	STATUS, Z  
-	    call	delum		; Deluminate LED's if RAM empty
+	    call	delum		; Apagamos el led si la ram está vacía
 	    incf	temp3, f
 	    incf	temp3, f
 	    incf	temp2, f
 	    movf	temp2, w
-	    xorlw	d'224'
+	    xorlw	d'224'		;este registro es el limite de nuestra matriz
 	    btfss	STATUS, Z
 	    goto	dotdecloop
-	    movf	temp4, w
+	    movf	temp4, w	;apunto a la dirección del registro que se debe cargar
 	    movwf	FSR
 	    movlw	d'0'
-	    addwf	INDF, w
-	    btfss	STATUS, Z
-	    call	colapp
+	    addwf	INDF, w		;pregunto si el registro que se debe cargar esta vacío 
+	    btfss	STATUS, Z	
+	    call	colrat		;si no esta
 	    movf	snake, w
 	    movwf	INDF
 	    return
-colapp	    btfsc	INDF, 7		; Bit 7 set indicates apple
-	    goto	apcl
+colrat	    btfsc	INDF, 7		; El bit 7 indica una rata
+	    goto	ratcl
 	    bsf		colind, 0
 	    return
-apcl	    clrf	apptmr
+ratcl	    clrf	rattmr
 	    incf	snake, f
 	    return	    
 
-delum	    movlw	LOW table      ; Deluminate chosen LED
+delum	    movlw	LOW table      ; Apaga el led elegido
 	    addwf	temp3,  w     
 	    movlw	HIGH table    
 	    btfsc	STATUS, C       
@@ -759,24 +755,24 @@ table	    bcf		C1, 0
 	    bcf		C8, 7	
 	    return
 ;-------------------------------------------------------------------------------
-;----------------------------  Dot Counter Increment  --------------------------
+;----------------------------  Incremento del contador de "puntos"  ------------
 ;-------------------------------------------------------------------------------	    
-plcdot	    addlw	d'160'	    ;A0 -> fila 0 por defecto
+plcdot	    addlw	d'160'	    ;A0		; El registro a cargar mapea con la fila 1
 	    btfsc	temp3, 7    ;fila 8?
-	    addlw	d'56'	    ;D8
+	    addlw	d'56'	    ;D8		; El registro a cargar mapea con la fila 8
 	    btfsc	temp3, 6    ;fila 7?
-	    addlw	d'48'	    ;D0
+	    addlw	d'48'	    ;D0		; El registro a cargar mapea con la fila 7
 	    btfsc	temp3, 5    ;fila 6?
-	    addlw	d'40'	    ;C8
+	    addlw	d'40'	    ;C8		; El registro a cargar mapea con la fila 6
 	    btfsc	temp3, 4    ;fila 5?
-	    addlw	d'32'	    ;C8
+	    addlw	d'32'	    ;C8		; El registro a cargar mapea con la fila 5
 	    btfsc	temp3, 3    ;fila 4?
-	    addlw	d'24'	    ;B8
+	    addlw	d'24'	    ;B8		; El registro a cargar mapea con la fila 4
 	    btfsc	temp3, 2    ;fila 3?
-	    addlw	d'16'	    ;B0
+	    addlw	d'16'	    ;B0		; El registro a cargar mapea con la fila 3
 	    btfsc	temp3, 1    ;fila 2?
-	    addlw	d'8'	    ;A8
-	    movwf	temp4
+	    addlw	d'8'	    ;A8		; El registro a cargar mapea con la fila 2
+	    movwf	temp4			; temp4 contiene ahora el numero de registro que debe cargarse con el tamaño del snake
 Ilum	    movlw	d'255'
 	    movwf	C1
 	    movwf	C2
@@ -788,45 +784,45 @@ Ilum	    movlw	d'255'
 	    movwf	C8
 	    return
 ;-------------------------------------------------------------------------------
-;---------------------------  Random Apple Generator  --------------------------
+;---------------------------  Generación aleatorio de Rata  --------------------
 ;-------------------------------------------------------------------------------	    
-Apple	    movlw	b'10000000'
-	    movwf	apptmr		; Clear count of 10 timer interrupts and states that an apple is present
-	    call	Random		; Fetch a "sort of" random number
+Rat	    movlw	b'10000000'
+	    movwf	rattmr		;limpiamos la cuenta de 10 interrupciones del timer e indicamos que hay una rata en el tablero
+	    call	Random		; Generamos un numero "aleatorio" en base al cual elegimos en que registro colocar la rata 
 	    addlw	d'159'		
 	    movwf	FSR
 notclr	    incf	FSR, f
 	    movf	INDF, w
 	    addlw	d'0'
 	    btfsc	STATUS, Z
-	    goto	addapple
+	    goto	addrat
 	    movf	FSR, w
 	    addlw	d'33'		;aseguramos que no sea mayor a 223
 	    btfss	STATUS, C
-	    goto	notclr		; Location not clear, try again.
+	    goto	notclr		; Elegimos otro registro, porque este no esta limpio
 	    movlw	d'159'
 	    movwf	FSR
 	    goto	notclr		; Location not clear, try again.
 	    
-addapple    movlw	d'255'
-	    movwf	INDF		; Seventh bit indicates apple to collision			
-	    movlw	d'7'		; program.
-	    addwf	T1H, f		; Increase snake speed.		    
+addrat	    movlw	d'255'		; Cargamos al maximo el registro que habia quedado apuntado por el FSR, el MSB indica
+	    movwf	INDF		; si existe una colisión con una rata para el registro en cuestión 
+	    movlw	d'7'		; Aumentamos la velocidad de la serpiente, (hacemos que timer1 temporize menos)   
+	    addwf	T1H, f			 
 	    return			
 ;-------------------------------------------------------------------------------
-;----------------------------  Random Number Routine  --------------------------
+;----------------------------  Generación de Número Random  --------------------
 ;-------------------------------------------------------------------------------	    
-Random	    movf	snake, w
+Random	    movf	snake, w	;tenemos en cuenta el tamaño del snake como varibale que influye en el numero "random" seleccionado
 	    movwf	temp3
-	    movlw	LOW Rantbl      
+	    movlw	LOW Rantbl      ;tomamos la parte baja de la dirección de la tabla
 	    addwf	temp3,  w     
-	    movlw	HIGH Rantbl    
+	    movlw	HIGH Rantbl    ;tomamos la parte alta de la dirección de la tabla
 	    btfsc	STATUS, C       
 	    addlw	1              
-	    movwf	PCLATH          
+	    movwf	PCLATH       ;modificamos el PCLATH para modificar el PC   (parte alta)
 	    movlw	LOW Rantbl     
 	    addwf	temp3, w       
-	    movwf	PCL             	    
+	    movwf	PCL             ;modificamos el PCL para modificar el PC	    
 Rantbl	    retlw	d'2'
 	    retlw	d'49'
 	    retlw	d'7'

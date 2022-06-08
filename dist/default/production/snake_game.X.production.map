@@ -1,5 +1,5 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Wed Jun 08 12:47:42 2022
+Linker Map File - Created Wed Jun 08 19:05:11 2022
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
@@ -24,7 +24,6 @@ Linker Map File - Created Wed Jun 08 12:47:42 2022
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                    Apple   0x000274    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Button   0x0000d3    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                  Checkdir   0x000170    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                      Col1   0x000112    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
@@ -62,11 +61,11 @@ Linker Map File - Created Wed Jun 08 12:47:42 2022
                 Placecont   0x000132    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Random   0x00028a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Rantbl   0x000295    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      Rat   0x000274    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                     Start   0x000078    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 addapple   0x000285    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     apcl   0x0001ce    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   addrat   0x000285    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    clrram   0x000024    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   colapp   0x0001ca    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   colrat   0x0001ca    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    delay1   0x00005f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                     delum   0x0001d1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                dotdecloop   0x0001b0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
@@ -79,6 +78,7 @@ Linker Map File - Created Wed Jun 08 12:47:42 2022
                   msdelay   0x00006f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    notclr   0x000279    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    plcdot   0x00025a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    ratcl   0x0001ce    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                      skip   0x000104    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                     table   0x0001da    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
 
@@ -133,15 +133,15 @@ Linker Map File - Created Wed Jun 08 12:47:42 2022
                  LoadDisp   0x000195    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Decdot   0x0001ad    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                dotdecloop   0x0001b0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   colapp   0x0001ca    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     apcl   0x0001ce    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   colrat   0x0001ca    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    ratcl   0x0001ce    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                     delum   0x0001d1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                     table   0x0001da    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    plcdot   0x00025a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                      Ilum   0x00026a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    Apple   0x000274    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      Rat   0x000274    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    notclr   0x000279    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 addapple   0x000285    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   addrat   0x000285    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Random   0x00028a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    Rantbl   0x000295    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
 
