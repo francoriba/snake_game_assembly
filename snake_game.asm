@@ -12,7 +12,8 @@
 ;-------------------------------------------------------------------------------
 	LIST      	P = 16F887, R=DEC	
 	include		<P16F887.inc>		
- __CONFIG _CONFIG1, _FOSC_XT & _WDTE_OFF & _PWRTE_ON & _MCLRE_OFF & _CP_OFF & _CPD_OFF & _BOREN_ON & _IESO_OFF & _FCMEN_OFF & _LVP_OFF
+ __CONFIG _CONFIG1, _INTOSC & _WDTE_OFF & _PWRTE_ON & _MCLRE_ON & _CP_OFF & _CPD_OFF & _BOREN_OFF & _IESO_OFF & _FCMEN_OFF & _LVP_OFF
+ __CONFIG _CONFIG2, _BOR4V_BOR40V & _WRT_OFF
 ;-------------------------------------------------------------------------------
 ;-----------------------------  Descripción de Puertos en Hardware  ------------
 ;-------------------------------------------------------------------------------	    
@@ -31,8 +32,8 @@
 ; PORTC - Salida - RC3 - Pin 18 - Column 4
 ; PORTC - Salida - RC4 - Pin 23 - Column 5
 ; PORTC - Salida - RC5 - Pin 24 - Column 6
-; PORTC - Salida - RC6 - Pin 25 - Column 7
-; PORTC - Salida - RC7 - Pin 26 - Column 7
+; PORTC - Salida - RB2 - Pin 25 - Column 7
+; PORTC - Salida - RB3 - Pin 26 - Column 8
 	
 ; PORTB - Entrada - RB7 - Pin 40 - Botón DOWN
 ; PORTB - Entrada - RB6 - Pin 39 - Botón UP
@@ -91,8 +92,8 @@
 	    #define COL4    PORTC, RC3
 	    #define COL5    PORTC, RC4
 	    #define COL6    PORTC, RC5
-	    #define COL7    PORTC, RC6
-	    #define COL8    PORTC, RC7
+	    #define COL7    PORTB, RB2
+	    #define COL8    PORTB, RB3
 	    #define LEFT    PORTB, RB5
 	    #define RIGHT   PORTB, RB4
 	    #define DOWN    PORTB, RB6
@@ -108,7 +109,7 @@
 ;-------------------------------------------------------------------------------
 ;--------------------------  Inicializacion de Puertos  ------------------------
 ;-------------------------------------------------------------------------------
-Init	    ;Confiracion de pines de PORTC y PORTD como salidas, PORTB<RB7-RB4> como entradas
+Init	    ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
 	    banksel	TRISB
 	    movlw	0xF0
 	    movwf	TRISB
