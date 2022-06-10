@@ -105,11 +105,11 @@
 ;-----------------------------  Vector de interrupción  ------------------------
 ;-------------------------------------------------------------------------------
             org	        04
-	    goto	Interrupt
+	    goto	ISR
 ;-------------------------------------------------------------------------------
 ;--------------------------  Inicializacion de Puertos  ------------------------
 ;-------------------------------------------------------------------------------
-Init	    ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
+Init	    ;PORTC y PORTD salidas, PORTB<RB7-RB4> entradas
 	    banksel	TRISB
 	    movlw	0xF0
 	    movwf	TRISB
@@ -373,9 +373,23 @@ GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre s
 	    movwf	Posdir
 	    return	    
 ;-------------------------------------------------------------------------------
-;-----------------------------  Programa de Intrrupción  -----------------------
+;-----------------------------  Programa de Interrupción  -----------------------
 ;-------------------------------------------------------------------------------	    
-Interrupt   bcf		PIR1, TMR1IF	;limpiamos flag del timer1
+ISR	    
+	    banksel	PIR1
+	    btfsc	PIR1, TMR1IF
+	    goto	TMR1_INT
+	    btfsc	PIR1, RCIF
+	    goto	RX_INT
+	    goto	END_ISR
+	    
+RX_INT	    ; el flag se baja automaticamente luego de leer 
+	    banksel		RCREG
+	    movf		RCREG, W
+	    movwf		Posdir	
+	    goto		END_ISR
+TMR1_INT
+	    bcf		PIR1, TMR1IF	;limpiamos flag del timer1
 	    movwf	w_save		;guardamos contexto
 	    movf	STATUS, w
 	    clrf	STATUS
@@ -570,7 +584,9 @@ LoadDisp    call	Decdot
 	    iorwf	C7, f
 	    movf	S8, w
 	    iorwf	C8, f
+	    goto	END_ISR
 	    
+END_ISR
 	    movf	pclath_save, w
 	    movwf	PCLATH
 	    movf	status_save, w
