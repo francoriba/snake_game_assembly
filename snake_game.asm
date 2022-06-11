@@ -163,10 +163,10 @@ clrram	    clrf	INDF
 	    movlw	.29
 	    movwf	SPBRG
 	    ;configuración para la comunicación serie (transmisión)
-	    banksel	TXSTA
-	    bsf		TXSTA, TXEN ; Habilitación de transmisión 
-	    bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
-	    bcf		TXSTA, SYNC ; modo asincrono
+	    ;banksel	TXSTA
+	    ;bsf		TXSTA, TXEN ; Habilitación de transmisión 
+	    ;bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
+	    ;bcf		TXSTA, SYNC ; modo asincrono
 	    
 ;-------------------------------------------------------------------------------
 ;-----------------------  Inicialización de la int del TMR0  -------------------
@@ -223,7 +223,7 @@ here	    call	Button		;verifica si se presiona un botón, y en caso afirmativo qu
 	    addlw	d'0'
 	    btfsc	STATUS, Z	; Cuando se presiona un botón la serpiente comienza moverse
 	    goto	here
-	    bsf		T1CON, TMR1ON   ; Start timer counting
+	    bsf		T1CON, TMR1ON   ; lanzamos la cuenta del timer
 	    goto	Start
 ;-------------------------------------------------------------------------------
 ;--------------------------------  Loops de Delays  ----------------------------
@@ -361,7 +361,7 @@ PRTLD	    movwf	temp
 	    bcf		ROW8
 	    return
 ;-------------------------------------------------------------------------------
-;--------------------------------  Entrada de Pulsador  ------------------------
+;--------------------------------  Entradas de Pulsador  -----------------------
 ;-------------------------------------------------------------------------------	
 Button	    btfss	UP
 	    goto	GO_UP
@@ -395,7 +395,7 @@ GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre s
 ;-------------------------------------------------------------------------------
 ;-----------------------------  Programa de Interrupción  -----------------------
 ;-------------------------------------------------------------------------------	    
-ISR	    
+ISR	    call	SAVE_CX
 	    banksel	PIR1
 	    btfsc	PIR1, TMR1IF
 	    goto	TMR1_INT
@@ -410,13 +410,6 @@ RX_INT	    ; el flag se baja automaticamente luego de leer RCREG
 	    goto		END_ISR
 TMR1_INT
 	    bcf		PIR1, TMR1IF	;limpiamos flag del timer1
-	    movwf	w_save		;guardamos contexto
-	    movf	STATUS, w
-	    clrf	STATUS
-	    movwf	status_save
-	    movf	PCLATH, w
-	    movwf	pclath_save	
-	    
 	    bcf		T1CON, TMR1ON   ; Detenemos el timer
 	    movf	T1H, w
 	    movwf	TMR1H
@@ -606,6 +599,13 @@ LoadDisp    call	Decdot
 	    iorwf	C8, f
 	    goto	END_ISR
 	    
+SAVE_CX	    movwf	w_save		;guardamos contexto
+	    movf	STATUS, w
+	    clrf	STATUS
+	    movwf	status_save
+	    movf	PCLATH, w
+	    movwf	pclath_save	
+	    return
 END_ISR
 	    movf	pclath_save, w
 	    movwf	PCLATH
