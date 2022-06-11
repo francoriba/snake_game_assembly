@@ -1,12 +1,12 @@
 MPLINK 5.09, LINKER
-Linker Map File - Created Fri Jun 10 17:38:52 2022
+Linker Map File - Created Sat Jun 11 13:07:07 2022
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x0005ce
+                   .org_2       code   0x000004    program   0x0005da
 .config_2007_SNAKE_GAME.O       code   0x002007    program   0x000002
 .config_2008_SNAKE_GAME.O       code   0x002008    program   0x000002
 
@@ -16,74 +16,75 @@ Linker Map File - Created Fri Jun 10 17:38:52 2022
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x0002ea      
+                            0x000004    0x0002f0      
                             0x002007    0x002008      
-            746 out of 8455 program addresses used, program memory utilization is 8%
+            752 out of 8455 program addresses used, program memory utilization is 8%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                   Button   0x0000dc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 Checkdir   0x000185    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col2   0x00012b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col3   0x00012f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col4   0x000133    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col5   0x000137    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col6   0x00013b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col7   0x00013f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col8   0x000143    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Decdot   0x0001c3    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectD   0x000192    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 DirectDa   0x000198    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectL   0x00019b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectR   0x0001a1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 DirectRa   0x0001a7    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectU   0x00018c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Disp   0x000091    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  END_ISR   0x0001bc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  GO_DOWN   0x0000ea    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  GO_LEFT   0x0000ef    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 GO_RIGHT   0x0000f4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    GO_UP   0x0000e5    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                      ISR   0x0000f9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Ilum   0x000280    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 Checkdir   0x000184    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col2   0x00012a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col3   0x00012e    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col4   0x000132    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col5   0x000136    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col6   0x00013a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col7   0x00013e    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col8   0x000142    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Decdot   0x0001c9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectD   0x000191    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 DirectDa   0x000197    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectL   0x00019a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectR   0x0001a0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 DirectRa   0x0001a6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectU   0x00018b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Disp   0x00009b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  END_ISR   0x0001c2    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  GO_DOWN   0x0000f6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  GO_LEFT   0x0000fb    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 GO_RIGHT   0x000100    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    GO_UP   0x0000f1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      ISR   0x0000de    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Ilum   0x000286    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                      Init   0x000005    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 LoadDisp   0x0001aa    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PRTLD   0x0000c2    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacA   0x000162    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacB   0x000167    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacC   0x00016c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacD   0x000171    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacE   0x000176    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacF   0x00017b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacG   0x000180    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                Placecont   0x000147    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   RX_INT   0x000100    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Random   0x0002a0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Rantbl   0x0002ab    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                      Rat   0x00028a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    Start   0x000081    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 TMR1_INT   0x000105    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   addrat   0x00029b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 LoadDisp   0x0001a9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PRTLD   0x0000c4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacA   0x000161    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacB   0x000166    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacC   0x00016b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacD   0x000170    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacE   0x000175    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacF   0x00017a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacG   0x00017f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                Placecont   0x000146    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   RB_INT   0x0000e8    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   RX_INT   0x000105    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Random   0x0002a6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Rantbl   0x0002b1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      Rat   0x000290    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  SAVE_CX   0x0001bb    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    Start   0x00008b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 TMR1_INT   0x00010a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   addrat   0x0002a1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    clrram   0x000024    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   colrat   0x0001e0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   delay1   0x000068    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    delum   0x0001e7    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-               dotdecloop   0x0001c6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 gameover   0x000087    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     here   0x000061    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 initloop   0x00006d    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     loop   0x00007a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    loopy   0x00006b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   loopy2   0x000069    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  msdelay   0x000078    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   notclr   0x00028f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   plcdot   0x000270    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    ratcl   0x0001e4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     skip   0x000119    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    table   0x0001f0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   colrat   0x0001e6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   delay1   0x000072    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    delum   0x0001ed    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+               dotdecloop   0x0001cc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 gameover   0x000091    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     here   0x00006c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 initloop   0x000077    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     loop   0x000084    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    loopy   0x000075    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   loopy2   0x000073    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  msdelay   0x000082    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   notclr   0x000295    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   plcdot   0x000276    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    ratcl   0x0001ea    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     skip   0x000118    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    table   0x0001f6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
 
 
 
@@ -92,62 +93,63 @@ Linker Map File - Created Fri Jun 10 17:38:52 2022
                 ---------  ---------  ---------  --------- ---------                
                      Init   0x000005    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
                    clrram   0x000024    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     here   0x000061    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   delay1   0x000068    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   loopy2   0x000069    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    loopy   0x00006b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 initloop   0x00006d    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  msdelay   0x000078    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     loop   0x00007a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    Start   0x000081    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 gameover   0x000087    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Disp   0x000091    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PRTLD   0x0000c2    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Button   0x0000dc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    GO_UP   0x0000e5    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  GO_DOWN   0x0000ea    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  GO_LEFT   0x0000ef    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 GO_RIGHT   0x0000f4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                      ISR   0x0000f9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   RX_INT   0x000100    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 TMR1_INT   0x000105    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     skip   0x000119    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col2   0x00012b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col3   0x00012f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col4   0x000133    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col5   0x000137    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col6   0x00013b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col7   0x00013f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Col8   0x000143    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                Placecont   0x000147    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacA   0x000162    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacB   0x000167    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacC   0x00016c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacD   0x000171    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacE   0x000176    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacF   0x00017b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    PlacG   0x000180    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 Checkdir   0x000185    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectU   0x00018c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectD   0x000192    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 DirectDa   0x000198    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectL   0x00019b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  DirectR   0x0001a1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 DirectRa   0x0001a7    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                 LoadDisp   0x0001aa    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                  END_ISR   0x0001bc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Decdot   0x0001c3    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-               dotdecloop   0x0001c6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   colrat   0x0001e0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    ratcl   0x0001e4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    delum   0x0001e7    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                    table   0x0001f0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   plcdot   0x000270    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                     Ilum   0x000280    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                      Rat   0x00028a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   notclr   0x00028f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   addrat   0x00029b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Random   0x0002a0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
-                   Rantbl   0x0002ab    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     here   0x00006c    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   delay1   0x000072    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   loopy2   0x000073    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    loopy   0x000075    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 initloop   0x000077    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  msdelay   0x000082    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     loop   0x000084    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    Start   0x00008b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 gameover   0x000091    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Disp   0x00009b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PRTLD   0x0000c4    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      ISR   0x0000de    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   RB_INT   0x0000e8    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    GO_UP   0x0000f1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  GO_DOWN   0x0000f6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  GO_LEFT   0x0000fb    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 GO_RIGHT   0x000100    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   RX_INT   0x000105    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 TMR1_INT   0x00010a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     skip   0x000118    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col2   0x00012a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col3   0x00012e    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col4   0x000132    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col5   0x000136    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col6   0x00013a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col7   0x00013e    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Col8   0x000142    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                Placecont   0x000146    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacA   0x000161    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacB   0x000166    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacC   0x00016b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacD   0x000170    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacE   0x000175    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacF   0x00017a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    PlacG   0x00017f    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 Checkdir   0x000184    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectU   0x00018b    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectD   0x000191    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 DirectDa   0x000197    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectL   0x00019a    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  DirectR   0x0001a0    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 DirectRa   0x0001a6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                 LoadDisp   0x0001a9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  SAVE_CX   0x0001bb    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                  END_ISR   0x0001c2    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Decdot   0x0001c9    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+               dotdecloop   0x0001cc    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   colrat   0x0001e6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    ratcl   0x0001ea    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    delum   0x0001ed    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                    table   0x0001f6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   plcdot   0x000276    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                     Ilum   0x000286    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                      Rat   0x000290    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   notclr   0x000295    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   addrat   0x0002a1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Random   0x0002a6    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
+                   Rantbl   0x0002b1    program     static F:\Users\Franco\Desktop\snake_project\snake_game.X\snake_game.asm
 
 

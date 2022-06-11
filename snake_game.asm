@@ -167,7 +167,6 @@ clrram	    clrf	INDF
 	    ;bsf		TXSTA, TXEN ; Habilitación de transmisión 
 	    ;bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
 	    ;bcf		TXSTA, SYNC ; modo asincrono
-	    
 ;-------------------------------------------------------------------------------
 ;-----------------------  Inicialización de la int del TMR0  -------------------
 ;-------------------------------------------------------------------------------
@@ -175,7 +174,7 @@ clrram	    clrf	INDF
 	    movlw	b'00110100'	;Inicialmente inhabilitado, trabajando con clock interno, no sincronizado ,osc LP apagado ,  prescaler 1:8, gate inhabilitado
 	    movwf	T1CON
 	    movlw	b'00001011'	;0x0B
-	    movwf	TMR1H		;0xDB
+	    movwf	T1H		;0xDB
 	    movlw	b'11011011'
 	    movwf	TMR1L		; genera interrupciones del timer1 cada 0.25s
 	    banksel	PIE1
@@ -193,6 +192,12 @@ clrram	    clrf	INDF
 	    banksel	WPUB
 	    movlw	0xF0
 	    movwf	WPUB
+	    ;configuración de interrupción por cambio de nivel
+	    bsf		INTCON, RBIE
+	    bcf		INTCON, RBIF
+	    banksel	IOCB
+	    movlw	b'11110000'
+	    movwf	IOCB
 	    banksel	PORTA
 	    movlw	d'2'		;cargamos variable para retardo por software 
 	    call	delay1		; Demora de 0.5s
@@ -203,7 +208,7 @@ clrram	    clrf	INDF
 	    movwf	C2
 	    movlw	b'00000000'
 	    movwf	C3
-	    movlw	b'00001000'	    ; por d efecto spawnea en la columna 4, fila 4
+	    movlw	b'00001000'	    ; por defecto spawnea en la columna 4, fila 4
 	    movwf	C4
 	    movwf	S4
 	    movlw	b'00000000'
@@ -218,7 +223,7 @@ clrram	    clrf	INDF
 	    ;indicamos que la columna de inicio es la 4
 	    movlw	b'00001000' 
 	    movwf	Posind
-here	    call	Button		;verifica si se presiona un botón, y en caso afirmativo que la direccion sea válida, si no lo es la corrige 
+here	    ;verifica si se presiona un botón, y en caso afirmativo que la direccion sea válida, si no lo es la corrige 
 	    movf	Posdir, W
 	    addlw	d'0'
 	    btfsc	STATUS, Z	; Cuando se presiona un botón la serpiente comienza moverse
@@ -229,7 +234,7 @@ here	    call	Button		;verifica si se presiona un botón, y en caso afirmativo qu
 ;--------------------------------  Loops de Delays  ----------------------------
 ;-------------------------------------------------------------------------------
 delay1	    movwf	temp4
-loopy2	    movlw	d'100'	    ;multiplos ode 2.5ms
+loopy2	    movlw	d'100'	    ;multiplos de 2.5ms
 	    movwf	temp3
 loopy	    movlw	d'250'
 	    movwf	temp
@@ -282,56 +287,49 @@ Disp	    movf	C1, w
 	    bsf		COL1
 	    call	msdelay
 	    bcf		COL1
-	    call	Button
-	    
+	
 	    movf	C2, w
 	    call	PRTLD
 	    bsf		COL2
 	    call	msdelay
 	    bcf		COL2
-	    call	Button
-	    
+	
 	    movf	C3, w
 	    call	PRTLD
 	    bsf		COL3
 	    call	msdelay
 	    bcf		COL3
-	    call	Button
+
 	    
 	    movf	C4, w
 	    call	PRTLD
 	    bsf		COL4
 	    call	msdelay
 	    bcf		COL4
-	    call	Button
 	    
 	    movf	C5, w
 	    call	PRTLD
 	    bsf		COL5
 	    call	msdelay
 	    bcf		COL5
-	    call	Button
 	    
 	    movf	C6, w
 	    call	PRTLD
 	    bsf		COL6
 	    call	msdelay
 	    bcf		COL6
-	    call	Button
 	    
 	    movf	C7, w
 	    call	PRTLD
 	    bsf		COL7
 	    call	msdelay
 	    bcf		COL7
-	    call	Button
 	    
 	    movf	C8, w
 	    call	PRTLD
 	    bsf		COL8
 	    call	msdelay
 	    bcf		COL8
-	    call	Button
 	    return
 	    
 PRTLD	    movwf	temp
@@ -361,38 +359,6 @@ PRTLD	    movwf	temp
 	    bcf		ROW8
 	    return
 ;-------------------------------------------------------------------------------
-;--------------------------------  Entradas de Pulsador  -----------------------
-;-------------------------------------------------------------------------------	
-Button	    btfss	UP
-	    goto	GO_UP
-	    btfss	DOWN
-	    goto	GO_DOWN
-	    btfss	LEFT
-	    goto	GO_LEFT
-	    btfss	RIGHT
-	    goto	GO_RIGHT
-	    return	    
-GO_UP	    btfsc	Posdir, 1	;nos aseguramos que el snake no pueda volver sobre si mismo
-	    goto	GO_DOWN	
-	    movlw	b'00000001'
-	    movwf	Posdir
-	    return
-GO_DOWN	    btfsc	Posdir, 0	;nos aseguramos que el snake no pueda volver sobre si mismo
-	    goto	GO_UP
-	    movlw	b'00000010'
-	    movwf	Posdir
-	    return
-GO_LEFT	    btfsc	Posdir, 3	;nos aseguramos que el snake no pueda volver sobre si mismo
-	    goto	GO_RIGHT
-	    movlw	b'00000100'
-	    movwf	Posdir
-	    return
-GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre si mismo
-	    goto	GO_LEFT
-	    movlw	b'00001000'
-	    movwf	Posdir
-	    return	    
-;-------------------------------------------------------------------------------
 ;-----------------------------  Programa de Interrupción  -----------------------
 ;-------------------------------------------------------------------------------	    
 ISR	    call	SAVE_CX
@@ -401,6 +367,40 @@ ISR	    call	SAVE_CX
 	    goto	TMR1_INT
 	    btfsc	PIR1, RCIF
 	    goto	RX_INT
+	    btfsc	INTCON, RBIF
+	    goto	RB_INT
+	    goto	END_ISR
+	    
+RB_INT	    bcf		INTCON, RBIF
+	    btfss	UP
+	    goto	GO_UP
+	    btfss	DOWN
+	    goto	GO_DOWN
+	    btfss	LEFT
+	    goto	GO_LEFT
+	    btfss	RIGHT
+	    goto	GO_RIGHT
+	    goto	END_ISR	    
+	    
+GO_UP	    btfsc	Posdir, 1	;nos aseguramos que el snake no pueda volver sobre si mismo
+	    goto	GO_DOWN	
+	    movlw	b'00000001'
+	    movwf	Posdir
+	    goto	END_ISR
+GO_DOWN	    btfsc	Posdir, 0	;nos aseguramos que el snake no pueda volver sobre si mismo
+	    goto	GO_UP
+	    movlw	b'00000010'
+	    movwf	Posdir
+	     goto	END_ISR
+GO_LEFT	    btfsc	Posdir, 3	;nos aseguramos que el snake no pueda volver sobre si mismo
+	    goto	GO_RIGHT
+	    movlw	b'00000100'
+	    movwf	Posdir
+	     goto	END_ISR
+GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre si mismo
+	    goto	GO_LEFT
+	    movlw	b'00001000'
+	    movwf	Posdir
 	    goto	END_ISR
 	    
 RX_INT	    ; el flag se baja automaticamente luego de leer RCREG
