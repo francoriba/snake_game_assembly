@@ -109,7 +109,8 @@
 ;-------------------------------------------------------------------------------
 ;--------------------------  Inicializacion de Puertos  ------------------------
 ;-------------------------------------------------------------------------------
-Init	    ;PORTC y PORTD salidas, PORTB<RB7-RB4> entradas
+Init	    
+	    ;PORTC y PORTD salidas, PORTB<RB7-RB4> entradas
 	    banksel	TRISB
 	    movlw	0xF0
 	    movwf	TRISB
@@ -147,6 +148,25 @@ clrram	    clrf	INDF
 	    xorlw	d'230'
 	    btfss	STATUS, Z
 	    goto	clrram
+	    ;configuración de interrupciones para comunicación serie (recepción) 
+	    banksel	PIE1
+	    bsf		PIE1, RCIE ;habilta interrupciones para recepción serie
+	    bsf		PIE1, TXIE ;habilta interrupciones para transmisión serie
+	    banksel	PIR1
+	    bcf		PIR1, RCIF ;comienza con el flag de recepción bajo
+	    bcf		PIR1, TXIF ;comienza con el flag de transmisión bajo
+	    ;confgiración del registro de estado y control de recepción 
+	    banksel	RCSTA
+	    bsf		RCSTA, CREN ;habilita la recepción continua da datos
+	    bsf		RCSTA, SPEN ;habilita el puerto serie
+	    banksel	SPBRG
+	    movlw	.29
+	    movwf	SPBRG
+	    ;configuración para la comunicación serie (transmisión)
+	    banksel	TXSTA
+	    bsf		TXSTA, TXEN ; Habilitación de transmisión 
+	    bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
+	    bcf		TXSTA, SYNC ; modo asincrono
 	    
 ;-------------------------------------------------------------------------------
 ;-----------------------  Inicialización de la int del TMR0  -------------------
@@ -383,7 +403,7 @@ ISR
 	    goto	RX_INT
 	    goto	END_ISR
 	    
-RX_INT	    ; el flag se baja automaticamente luego de leer 
+RX_INT	    ; el flag se baja automaticamente luego de leer RCREG
 	    banksel		RCREG
 	    movf		RCREG, W
 	    movwf		Posdir	
