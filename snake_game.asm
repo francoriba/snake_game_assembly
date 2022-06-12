@@ -43,7 +43,8 @@
 ;-------------------------------------------------------------------------------
 ;--------------------------------  Variables  ---------------------------------- 
 ;-------------------------------------------------------------------------------
-	    cblock	0x20	    
+	    cblock	0x20	 
+	    aux
 	    temp
 	    temp2
 	    temp3
@@ -105,11 +106,12 @@
 ;-----------------------------  Vector de interrupción  ------------------------
 ;-------------------------------------------------------------------------------
             org	        04
-	    goto	Interrupt
+	    goto	ISR
 ;-------------------------------------------------------------------------------
 ;--------------------------  Inicializacion de Puertos  ------------------------
 ;-------------------------------------------------------------------------------
-Init	    ;PORTC and PORTD pins are outputs, PORTB<RB7-RB4> are inputs
+Init	    
+	    ;PORTC y PORTD salidas, PORTB<RB7-RB4> entradas
 	    banksel	TRISB
 	    movlw	0xF0
 	    movwf	TRISB
@@ -147,7 +149,25 @@ clrram	    clrf	INDF
 	    xorlw	d'230'
 	    btfss	STATUS, Z
 	    goto	clrram
-	    
+	    ;configuración de interrupciones para comunicación serie (recepción) 
+	    banksel	PIE1
+	    bsf		PIE1, RCIE ;habilta interrupciones para recepción serie
+	    bsf		PIE1, TXIE ;habilta interrupciones para transmisión serie
+	    banksel	PIR1
+	    bcf		PIR1, RCIF ;comienza con el flag de recepción bajo
+	    bcf		PIR1, TXIF ;comienza con el flag de transmisión bajo
+	    ;confgiración del registro de estado y control de recepción 
+	    banksel	RCSTA
+	    bsf		RCSTA, CREN ;habilita la recepción continua da datos
+	    bsf		RCSTA, SPEN ;habilita el puerto serie
+	    banksel	SPBRG
+	    movlw	.25
+	    movwf	SPBRG	    ;9600baud  
+	    banksel	TXSTA
+	    bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
+	    bcf		TXSTA, SYNC ; modo asincrono
+	    banksel	BAUDCTL
+	    bcf		BAUDCTL, BRG16
 ;-------------------------------------------------------------------------------
 ;-----------------------  Inicialización de la int del TMR0  -------------------
 ;-------------------------------------------------------------------------------
@@ -155,7 +175,7 @@ clrram	    clrf	INDF
 	    movlw	b'00110100'	;Inicialmente inhabilitado, trabajando con clock interno, no sincronizado ,osc LP apagado ,  prescaler 1:8, gate inhabilitado
 	    movwf	T1CON
 	    movlw	b'00001011'	;0x0B
-	    movwf	TMR1H		;0xDB
+	    movwf	T1H		;0xDB
 	    movlw	b'11011011'
 	    movwf	TMR1L		; genera interrupciones del timer1 cada 0.25s
 	    banksel	PIE1
@@ -173,6 +193,12 @@ clrram	    clrf	INDF
 	    banksel	WPUB
 	    movlw	0xF0
 	    movwf	WPUB
+	    ;configuración de interrupción por cambio de nivel
+	    bsf		INTCON, RBIE
+	    bcf		INTCON, RBIF
+	    banksel	IOCB
+	    movlw	b'11110000'
+	    movwf	IOCB
 	    banksel	PORTA
 	    movlw	d'2'		;cargamos variable para retardo por software 
 	    call	delay1		; Demora de 0.5s
@@ -183,7 +209,7 @@ clrram	    clrf	INDF
 	    movwf	C2
 	    movlw	b'00000000'
 	    movwf	C3
-	    movlw	b'00001000'	    ; por d efecto spawnea en la columna 4, fila 4
+	    movlw	b'00001000'	    ; por defecto spawnea en la columna 4, fila 4
 	    movwf	C4
 	    movwf	S4
 	    movlw	b'00000000'
@@ -198,18 +224,18 @@ clrram	    clrf	INDF
 	    ;indicamos que la columna de inicio es la 4
 	    movlw	b'00001000' 
 	    movwf	Posind
-here	    call	Button		;verifica si se presiona un botón, y en caso afirmativo que la direccion sea válida, si no lo es la corrige 
+here	    ;verifica si se presiona un botón, y en caso afirmativo que la direccion sea válida, si no lo es la corrige 
 	    movf	Posdir, W
 	    addlw	d'0'
 	    btfsc	STATUS, Z	; Cuando se presiona un botón la serpiente comienza moverse
 	    goto	here
-	    bsf		T1CON, TMR1ON   ; Start timer counting
+	    bsf		T1CON, TMR1ON   ; lanzamos la cuenta del timer
 	    goto	Start
 ;-------------------------------------------------------------------------------
 ;--------------------------------  Loops de Delays  ----------------------------
 ;-------------------------------------------------------------------------------
 delay1	    movwf	temp4
-loopy2	    movlw	d'100'	    ;multiplos ode 2.5ms
+loopy2	    movlw	d'100'	    ;multiplos de 2.5ms
 	    movwf	temp3
 loopy	    movlw	d'250'
 	    movwf	temp
@@ -262,56 +288,49 @@ Disp	    movf	C1, w
 	    bsf		COL1
 	    call	msdelay
 	    bcf		COL1
-	    call	Button
-	    
+	
 	    movf	C2, w
 	    call	PRTLD
 	    bsf		COL2
 	    call	msdelay
 	    bcf		COL2
-	    call	Button
-	    
+	
 	    movf	C3, w
 	    call	PRTLD
 	    bsf		COL3
 	    call	msdelay
 	    bcf		COL3
-	    call	Button
+
 	    
 	    movf	C4, w
 	    call	PRTLD
 	    bsf		COL4
 	    call	msdelay
 	    bcf		COL4
-	    call	Button
 	    
 	    movf	C5, w
 	    call	PRTLD
 	    bsf		COL5
 	    call	msdelay
 	    bcf		COL5
-	    call	Button
 	    
 	    movf	C6, w
 	    call	PRTLD
 	    bsf		COL6
 	    call	msdelay
 	    bcf		COL6
-	    call	Button
 	    
 	    movf	C7, w
 	    call	PRTLD
 	    bsf		COL7
 	    call	msdelay
 	    bcf		COL7
-	    call	Button
 	    
 	    movf	C8, w
 	    call	PRTLD
 	    bsf		COL8
 	    call	msdelay
 	    bcf		COL8
-	    call	Button
 	    return
 	    
 PRTLD	    movwf	temp
@@ -341,9 +360,20 @@ PRTLD	    movwf	temp
 	    bcf		ROW8
 	    return
 ;-------------------------------------------------------------------------------
-;--------------------------------  Entrada de Pulsador  ------------------------
-;-------------------------------------------------------------------------------	
-Button	    btfss	UP
+;-----------------------------  Programa de Interrupción  -----------------------
+;-------------------------------------------------------------------------------	    
+ISR	    call	SAVE_CX
+	    banksel	PIR1
+	    btfsc	PIR1, TMR1IF
+	    goto	TMR1_INT
+	    btfsc	PIR1, RCIF
+	    goto	RX_INT
+	    btfsc	INTCON, RBIF
+	    goto	RB_INT
+	    goto	END_ISR
+	    
+RB_INT	    bcf		INTCON, RBIF
+	    btfss	UP
 	    goto	GO_UP
 	    btfss	DOWN
 	    goto	GO_DOWN
@@ -351,38 +381,43 @@ Button	    btfss	UP
 	    goto	GO_LEFT
 	    btfss	RIGHT
 	    goto	GO_RIGHT
-	    return	    
+	    goto	END_ISR	    
+	    
 GO_UP	    btfsc	Posdir, 1	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_DOWN	
 	    movlw	b'00000001'
 	    movwf	Posdir
-	    return
+	    goto	END_ISR
 GO_DOWN	    btfsc	Posdir, 0	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_UP
 	    movlw	b'00000010'
 	    movwf	Posdir
-	    return
+	     goto	END_ISR
 GO_LEFT	    btfsc	Posdir, 3	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_RIGHT
 	    movlw	b'00000100'
 	    movwf	Posdir
-	    return
+	     goto	END_ISR
 GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre si mismo
 	    goto	GO_LEFT
 	    movlw	b'00001000'
 	    movwf	Posdir
-	    return	    
-;-------------------------------------------------------------------------------
-;-----------------------------  Programa de Intrrupción  -----------------------
-;-------------------------------------------------------------------------------	    
-Interrupt   bcf		PIR1, TMR1IF	;limpiamos flag del timer1
-	    movwf	w_save		;guardamos contexto
-	    movf	STATUS, w
-	    clrf	STATUS
-	    movwf	status_save
-	    movf	PCLATH, w
-	    movwf	pclath_save	
+	    goto	END_ISR
 	    
+RX_INT	    ; el flag se baja automaticamente luego de leer RCREG
+	    banksel		RCREG
+	    movf		RCREG, W
+	    btfsc		RCREG, 0
+	    goto		GO_LEFT; en realidad va hacia arriba en el hardware	
+	    btfsc		RCREG, 1
+	    goto		GO_RIGHT
+	    btfsc		RCREG, 2
+	    goto		GO_DOWN
+	    btfsc		RCREG, 3
+	    goto		GO_UP
+	    goto		END_ISR
+TMR1_INT
+	    bcf		PIR1, TMR1IF	;limpiamos flag del timer1
 	    bcf		T1CON, TMR1ON   ; Detenemos el timer
 	    movf	T1H, w
 	    movwf	TMR1H
@@ -457,11 +492,11 @@ Placecont   clrf	S8
 	    
 	    btfsc	Posind, 7   ; Debemos cargar registro de la columna 8?
 	    goto	PlacA
-	    btfsc	Posind, 6   ; Debemos cargar  registro de la columna 7?
+	    btfsc	Posind, 6   ; Debemos cargar registro de la columna 7?
 	    goto	PlacB
 	    btfsc	Posind, 5   ; Debemos cargar registro de la columna 6?
 	    goto	PlacC
-	    btfsc	Posind, 4   ; Debemos cargar  registro de la columna 5?
+	    btfsc	Posind, 4   ; Debemos cargar registro de la columna 5?
 	    goto	PlacD
 	    btfsc	Posind, 3   ; Debemos cargar registro de la columna 4?
 	    goto	PlacE
@@ -570,7 +605,16 @@ LoadDisp    call	Decdot
 	    iorwf	C7, f
 	    movf	S8, w
 	    iorwf	C8, f
+	    goto	END_ISR
 	    
+SAVE_CX	    movwf	w_save		;guardamos contexto
+	    movf	STATUS, w
+	    clrf	STATUS
+	    movwf	status_save
+	    movf	PCLATH, w
+	    movwf	pclath_save	
+	    return
+END_ISR
 	    movf	pclath_save, w
 	    movwf	PCLATH
 	    movf	status_save, w
@@ -888,4 +932,4 @@ Rantbl	    retlw	d'2'
 	    retlw	d'28'
 	    retlw	d'14'
 	    retlw	d'29'
-	end
+	    end
