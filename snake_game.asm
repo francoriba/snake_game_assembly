@@ -43,7 +43,8 @@
 ;-------------------------------------------------------------------------------
 ;--------------------------------  Variables  ---------------------------------- 
 ;-------------------------------------------------------------------------------
-	    cblock	0x20	    
+	    cblock	0x20	 
+	    aux
 	    temp
 	    temp2
 	    temp3
@@ -160,13 +161,13 @@ clrram	    clrf	INDF
 	    bsf		RCSTA, CREN ;habilita la recepción continua da datos
 	    bsf		RCSTA, SPEN ;habilita el puerto serie
 	    banksel	SPBRG
-	    movlw	.29
-	    movwf	SPBRG
-	    ;configuración para la comunicación serie (transmisión)
-	    ;banksel	TXSTA
-	    ;bsf		TXSTA, TXEN ; Habilitación de transmisión 
-	    ;bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
-	    ;bcf		TXSTA, SYNC ; modo asincrono
+	    movlw	.25
+	    movwf	SPBRG	    ;9600baud  
+	    banksel	TXSTA
+	    bsf		TXSTA, BRGH ; Alta velocidad de baudrate activada
+	    bcf		TXSTA, SYNC ; modo asincrono
+	    banksel	BAUDCTL
+	    bcf		BAUDCTL, BRG16
 ;-------------------------------------------------------------------------------
 ;-----------------------  Inicialización de la int del TMR0  -------------------
 ;-------------------------------------------------------------------------------
@@ -406,7 +407,14 @@ GO_RIGHT    btfsc	Posdir, 2	;nos aseguramos que el snake no pueda volver sobre s
 RX_INT	    ; el flag se baja automaticamente luego de leer RCREG
 	    banksel		RCREG
 	    movf		RCREG, W
-	    movwf		Posdir	
+	    btfsc		RCREG, 0
+	    goto		GO_LEFT; en realidad va hacia arriba en el hardware	
+	    btfsc		RCREG, 1
+	    goto		GO_RIGHT
+	    btfsc		RCREG, 2
+	    goto		GO_DOWN
+	    btfsc		RCREG, 3
+	    goto		GO_UP
 	    goto		END_ISR
 TMR1_INT
 	    bcf		PIR1, TMR1IF	;limpiamos flag del timer1
@@ -484,11 +492,11 @@ Placecont   clrf	S8
 	    
 	    btfsc	Posind, 7   ; Debemos cargar registro de la columna 8?
 	    goto	PlacA
-	    btfsc	Posind, 6   ; Debemos cargar  registro de la columna 7?
+	    btfsc	Posind, 6   ; Debemos cargar registro de la columna 7?
 	    goto	PlacB
 	    btfsc	Posind, 5   ; Debemos cargar registro de la columna 6?
 	    goto	PlacC
-	    btfsc	Posind, 4   ; Debemos cargar  registro de la columna 5?
+	    btfsc	Posind, 4   ; Debemos cargar registro de la columna 5?
 	    goto	PlacD
 	    btfsc	Posind, 3   ; Debemos cargar registro de la columna 4?
 	    goto	PlacE
@@ -924,4 +932,4 @@ Rantbl	    retlw	d'2'
 	    retlw	d'28'
 	    retlw	d'14'
 	    retlw	d'29'
-	end
+	    end
