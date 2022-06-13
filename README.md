@@ -1,3 +1,8 @@
 # snake_game.X
-Proyecto intrgrador para Electrónica Digital 2 | Facutad de Ciencias Exáctas, Físicas y Naturales, Universidad Nacional de Córdoba, Argentina
-Enlace al informe del Proyecto: https://docs.google.com/document/d/1fhUM8fSnMyMA8YcW7qWdApMFtflHpQqR11wdwFER3rM/edit?usp=sharing
+Español
+Este proyecto consiste en recrear el famoso videojuego snake o "viborita" utilizando una matriz led y el microcontrolador PIC16F887, el lenguaje de programación utilizado en el proyecto es assembly
+Enlace a documentación y videos del proyecto: https://drive.google.com/drive/folders/1FLhA74nuN7D4FifSvaQ3yQJIey2IwdWz?usp=sharing
+
+English
+This project consists of recreating the famous snake video game using a LED matrix and the PIC16F887 microcontroller. The programming language used in the project is assembly.
+Link to documentation and videos of the project: https://drive.google.com/drive/folders/1FLhA74nuN7D4FifSvaQ3yQJIey2IwdWz?usp=sharing
