@@ -250,7 +250,7 @@ initloop    goto	$+1	    ;2us
 	    decfsz	temp4, f
 	    goto	loopy2	    ;multiplos de 250ms
 	    return
-	    
+;delay de 1 ms	    
 msdelay	    movlw	d'100'
 	    movwf	temp
 loop	    goto	$+1	    ;2us
@@ -284,79 +284,79 @@ gameover    movlw	d'100'
 ;--------------------------------  Ciclo de Display  ---------------------------
 ;-------------------------------------------------------------------------------	    	    
 Disp	    movf	C1, w
-	    call	PRTLD
-	    bsf		COL1
-	    call	msdelay
-	    bcf		COL1
+	    call	PRTLD	    ;fijar estado de las filas para la columna 1
+	    bsf		COL1	    ;activar columna 1
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL1	    ;desactivar columna 1
 	
 	    movf	C2, w
-	    call	PRTLD
-	    bsf		COL2
-	    call	msdelay
-	    bcf		COL2
+	    call	PRTLD	    ;fijar estado de las filas para la columna 2
+	    bsf		COL2	    ;activar columna 2
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL2	    ;desactivar columna 2
 	
 	    movf	C3, w
-	    call	PRTLD
-	    bsf		COL3
-	    call	msdelay
-	    bcf		COL3
+	    call	PRTLD	    ;fijar estado de las filas para la columna 3
+	    bsf		COL3	    ;activar columna 3
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL3	    ;desactivar columna 3
 
 	    
 	    movf	C4, w
-	    call	PRTLD
-	    bsf		COL4
-	    call	msdelay
-	    bcf		COL4
+	    call	PRTLD	    ;fijar estado de las filas para la columna 3
+	    bsf		COL4	    ;activar columna 4
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL4	    ;desactivar columna 4
 	    
 	    movf	C5, w
-	    call	PRTLD
-	    bsf		COL5
-	    call	msdelay
-	    bcf		COL5
+	    call	PRTLD	    ;fijar estado de las filas para la columna 4
+	    bsf		COL5	    ;activar columna 5
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL5	    ;desactivar columna 5
 	    
 	    movf	C6, w
-	    call	PRTLD
-	    bsf		COL6
-	    call	msdelay
-	    bcf		COL6
+	    call	PRTLD	    ;fijar estado de las filas para la columna 5
+	    bsf		COL6	    ;activar columna 6
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL6	    ;desactivar columna 6
 	    
 	    movf	C7, w
-	    call	PRTLD
-	    bsf		COL7
-	    call	msdelay
-	    bcf		COL7
+	    call	PRTLD	    ;fijar estado de las filas para la columna 6
+	    bsf		COL7	    ;activar columna 7
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL7	    ;desactivar columna 7
 	    
 	    movf	C8, w
-	    call	PRTLD
-	    bsf		COL8
-	    call	msdelay
-	    bcf		COL8
+	    call	PRTLD	    ;fijar estado de las filas para la columna 7
+	    bsf		COL8	    ;activar columna 8
+	    call	msdelay	    ;esperar 1 ms
+	    bcf		COL8	    ;desactivar columna 8
 	    return
 	    
 PRTLD	    movwf	temp
-	    bsf		ROW1
-	    bsf		ROW2
-	    bsf		ROW3
-	    bsf		ROW4
-	    bsf		ROW5
-	    bsf		ROW6
-	    bsf		ROW7
-	    bsf		ROW8
-	    btfsc	temp, 0
+	    bsf		ROW1	    ;apaga todas las filas
+	    bsf		ROW2	    
+	    bsf		ROW3	    
+	    bsf		ROW4	    
+	    bsf		ROW5	    
+	    bsf		ROW6	    
+	    bsf		ROW7	    
+	    bsf		ROW8	    
+	    btfsc	temp, 0	    ;activar fila 1?
 	    bcf		ROW1
-	    btfsc	temp, 1
+	    btfsc	temp, 1	    ;activar  fila 2?
 	    bcf		ROW2
-	    btfsc	temp, 2
+	    btfsc	temp, 2	    ;activar  fila 3?
 	    bcf		ROW3
-	    btfsc	temp, 3
+	    btfsc	temp, 3	    ;activar  fila 4?
 	    bcf		ROW4
-	    btfsc	temp, 4
+	    btfsc	temp, 4	    ;activar  fila 5?
 	    bcf		ROW5
-	    btfsc	temp, 5
+	    btfsc	temp, 5	    ;activar  fila 6?
 	    bcf		ROW6
-	    btfsc	temp, 6
+	    btfsc	temp, 6	    ;activar  fila 7?
 	    bcf		ROW7
-	    btfsc	temp, 7
+	    btfsc	temp, 7	    ;activar  fila 8?
 	    bcf		ROW8
 	    return
 ;-------------------------------------------------------------------------------
